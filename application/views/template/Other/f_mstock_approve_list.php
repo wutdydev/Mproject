@@ -1,0 +1,79 @@
+
+<script type="text/javascript" src="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(document).ready(function () {
+            $('#dataTables-example').DataTable({
+                "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+    $('.confirmation').confirm({
+        animation: 'left',
+        closeAnimation: 'left',
+        animateFromElement: false,
+        icon: 'glyphicon glyphicon-exclamation-sign',
+        content: 'หากอนุมัติผิดพลาดสามารถกู้คืนข้อมูลได้',
+        title: 'ต้องการอนุมัติข้อมูลหรือไม่',
+        autoClose: 'cancel|6000',
+        type: 'green',
+        confirmButtonColor: "#DD6B55",
+
+        buttons: {
+
+            confirm: {
+                text: 'อนุมัติ',
+                btnClass: 'btn-green',
+                keys: ['Enter', 'y'],
+                action: function () {
+                    location.href = this.$target.attr('href');
+                }
+            },
+            cancel: {
+                text: 'ยกเลิก',
+                btnClass: 'btn-default',
+                keys: ['ESC', 'n'],
+                action: function () {
+                }
+            },
+
+        }
+    });
+    
+    $('.confirmation2').confirm({
+        animation: 'left',
+        closeAnimation: 'left',
+        animateFromElement: false,
+        icon: 'glyphicon glyphicon-exclamation-sign',
+        content: 'ยกเลิกอนุมัติใช้งานจะทำการเรียกคืนทั้งหมด',
+        title: 'ต้องการยกเลิกอนุมัติข้อมูลหรือไม่',
+        autoClose: 'cancel|6000',
+        type: 'red',
+        confirmButtonColor: "#DD6B55",
+
+        buttons: {
+
+            confirm: {
+                text: 'ยกเลิกอนุมัติ',
+                btnClass: 'btn-danger',
+                keys: ['Enter', 'y'],
+                action: function () {
+                    location.href = this.$target.attr('href');
+                }
+            },
+            cancel: {
+                text: 'ยกเลิก',
+                btnClass: 'btn-default',
+                keys: ['ESC', 'n'],
+                action: function () {
+                }
+            },
+
+        }
+    });
+
+</script>

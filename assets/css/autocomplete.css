@@ -1,0 +1,60 @@
+.autocomplete_list * {
+    font-family: "myriad pro", "segoe ui", "trebuchet ms", sans-serif;
+    font-size: 13px;
+}
+
+.autocomplete_list b {
+    font-weight: bold;
+}
+
+.autocomplete_list { 
+    margin-top: 2px;
+    padding: 5px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.2);
+    *border-right-width: 2px;
+    *border-bottom-width: 2px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    width:100%;        
+}
+
+.autocomplete_list, .autocomplete_list ol, .autocomplete_list li { 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+}
+
+.autocomplete_list li { 
+    margin: 0; 
+    text-align: left;
+    cursor: pointer; 
+    padding: 4px;
+    border-bottom: 1px solid silver;	
+}
+
+.autocomplete_list .last_item { 
+    border: none;	
+}
+
+.autocomplete_list .current_item { 
+    background: #F5F5F5; color: #000; 
+}
+
+.autocomplete_list span { 
+    color: #111; float: right; padding-left: 2em; 
+}
+
+.autocomplete_icon { 
+    background-image: url(autocomplete.gif);	
+    cursor: pointer;
+    cursor: hand;	
+}

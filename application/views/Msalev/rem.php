@@ -1,0 +1,120 @@
+
+<link href="<?php echo base_url() ?>assets/css/jquery-ui.css" rel="stylesheet">
+<script src="<?php echo base_url() ?>assets/js/js_check_null_rem.js" type="text/javascript"></script>
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header"><?php echo $tt_name; ?> </h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    บันทึกการรับเงินประจำวัน
+                </div>
+                <form role="form" method="post" enctype="multipart/form-data" id="F_1" name="F_1">
+                    <div class="panel-body">
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>รายการ</th>
+                                    <th>กรอกข้อมูล</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td width='20%'>เลขที่ใบกำกับภาษี</td>
+                                    <td width='70%'><input class="form-control" type="text" name="num_job" id="num_job"placeholder="เลขที่ใบกำกับภาษี"></td>
+                                </tr>
+                                <tr>
+                                    <td>เลขที่ใบเสนอราคา</td>
+                                    <td>
+                                        <div class="form-group has-feedback">
+                                            <input class="form-control css-require" type="text" name="rc_num_job" id="rc_num_job" value="<?php echo $query[0]['tb1_rc_num_job'] ?>" placeholder="เลขที่ใบกำกับภาษี">
+                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                        </div> 
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>เลขที่เช็ค</td>
+                                    <td><input class="form-control" type="text" name="rc_num_check" id="rc_num_check" value="<?php echo $query[0]['tb1_rc_num_check'] ?>" placeholder="เลขที่เช็ค กรุณาระบุให้ครบถ้วน"></td>
+                                </tr>
+                                <tr>
+                                    <td>CODE</td>
+                                    <td><input class="form-control" type="text" onKeyUp="check_null();" name="code_bank" id="code_bank" value="<?php echo $query[0]['tb3_code_all'] ?>" placeholder="รหัสและสาขาของธนาคารนั้นๆ มีระบุในเช็คทุกใบ"></td>
+                                </tr>
+                                  <input class="form-control" type="hidden" name="bb_id" id="bb_id" value="<?php echo $query[0]['tb1_bb_id'] ?>">
+                                  <input class="form-control" type="hidden" name="rc_company" id="rc_company" value="<?php echo $query[0]['tb1_rc_company'] ?>" >
+                                  <input class="form-control" type="hidden" name="rc_main_code" id="rc_main_code" value="<?php echo $query[0]['tb1_rc_main_code'] ?>">
+                                  <input class="form-control" type="hidden" name="ex_code" id="ex_code"  value="<?php echo $query[0]['tb1_ex_code'] ?>">
+
+                                <tr>
+                                    <td>ธนาคาร</td>
+                                    <td><input class="form-control" type="text" name="bank_name" id="bank_name" value="<?php echo $query[0]['tb3_bank_name_th'] ?>" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>สาขา</td>
+                                    <td><input class="form-control" type="text" name="bank_branch" id="bank_branch" value="<?php echo $query[0]['tb3_bb_name_th'] ?>" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td>จำนวนเงิน</td>
+                                    <td>
+                                        <div class="form-group has-feedback">
+                                            <input class="form-control css-require" type="text" name="rc_amount" id="rc_amount" value="<?php echo $query[0]['tb1_rc_amount'] ?>">
+                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                        </div> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>จำนวนเงิน(ตามเช็คหรือเงินโอน)</td>
+                                    <td>
+                                        <div class="form-group has-feedback">
+                                            <input style="color: green" class="form-control css-require" type="text" name="rc_amount_true" value="<?php echo $query[0]['tb1_rc_amount_true'] ?>" id="rc_amount_true" placeholder="จำนวนเงินที่แท้จริงของ ตามเช็คหรือเงินโอน">
+                                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                        </div> 
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>วันที่เช็ค</td>
+                                    <td><input class="form-control" type="date" type="text" name="rc_date_check" id="rc_date_check" value="<?php echo $query[0]['tb1_rc_date_check'] ?>"></td>
+                                </tr>
+                                <tr>
+                                    <td>วันที่คีย์(วันที่ออกรายงาน)</td>
+                                    <td><input class="form-control" value="<?php echo date("Y-m-d") ?>" type="date" name="rc_date_current" id="rc_date_current" value="<?php echo $query[0]['tb1_rc_date_current'] ?>"></td>
+                                </tr>
+                                <tr>
+                                    <td>วันที่รับชำระ/รับเงิน</td>
+                                    <td><input class="form-control" value="<?php echo date("Y-m-d") ?>" type="date" name="rc_date_re" id="rc_date_re" value="<?php echo $query[0]['tb1_rc_date_re'] ?>"></td>
+                                </tr>
+                                <tr>
+                                    <td>หมายเหตุ</td>
+                                    <td><textarea class="form-control" rows="5" id="remark" name="remark"  placeholder="หมายเหตุเพิ่มเติม"><?php echo replace_detail($query[0]['tb1_remark']) ?></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button type="submit" name="sm" id="sm" class="btn btn-outline btn-success"><i class="fa fa-save" ></i> บันทึกการรับเงิน</button>
+                                        <button type="reset" class="btn btn-outline btn-danger"><i class="fa fa-undo" ></i> รีเซ็ตข้อมูล</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+                                
+             <?php
+        echo $this->session->userdata('warn_rem');
+        unset($_SESSION['warn_rem']);
+        ?>
+            
+        </div>
+    </div>
+
+</div>
