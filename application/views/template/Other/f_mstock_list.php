@@ -2,10 +2,8 @@
 <script type="text/javascript" src="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.js"></script>
 <script>
     $(document).ready(function () {
-        $(document).ready(function () {
-            $('#dataTables-example').DataTable({
-                "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
-            });
+        $('#dataTables-example').DataTable({
+            "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
         });
     });
 </script>
@@ -22,9 +20,7 @@
         autoClose: 'cancel|6000',
         type: 'red',
         confirmButtonColor: "#DD6B55",
-
         buttons: {
-
             confirm: {
                 text: 'ลบข้อมูล',
                 btnClass: 'btn-danger',
@@ -40,7 +36,6 @@
                 action: function () {
                 }
             },
-
         }
     });
 

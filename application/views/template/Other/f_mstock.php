@@ -6,13 +6,11 @@
 <script src="<?php echo base_url() ?>assets/js/auto_mstock.js"  type="text/javascript"></script>
 
 <script>
-    $(document).ready(function () {
         $(document).ready(function () {
             $('#dataTables-example').DataTable({
                 "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
             });
         });
-    });
 </script>
 
 <script type="text/javascript">
