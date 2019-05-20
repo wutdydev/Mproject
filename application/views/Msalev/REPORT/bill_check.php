@@ -61,7 +61,7 @@
                 ?>
                 <tr>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;border-left:solid 0.5px #000;font-size: 1.4rem;" ><?php echo $i ?></td>
-                    <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo convdate_null($res->tb2_date_job) ?> <?php echo $res->tb9c_ex_id; ?> <?php echo $res->tb10c_ex_id; ?></td>
+                    <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo convdate_null($res->tb2_date_job) ?></td>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb7_typesale_name; ?></td>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;" ><?php echo $res->tb8_typep_name; ?></td>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb1_JOBMIW ?></td>
@@ -69,7 +69,7 @@
                     <td align="left" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb3_cus_name; ?></td>
                     <td align="left" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb1_jobname; ?></td>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb2_user_sale; ?></td>
-                    <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb1_md_approved ?></td>
+                    <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb1_md_approved_name ?></td>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo $res->tb6_ls_num; ?></td>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo convdate_null($res->tb9_ex_date_num); ?></td>
                     <td align="center" style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.4rem;"><?php echo convdate_null($res->tb9_ex_date_check); ?></td>

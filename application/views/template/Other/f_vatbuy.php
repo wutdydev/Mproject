@@ -1,4 +1,5 @@
-<script type="text/javascript" src="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.js"></script><script type="text/javascript">
+<script type="text/javascript" src="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.js"></script>
+<script type="text/javascript">
     var BASE_URL = "<?php echo base_url() ?>"; //ประกาศ BASE_URL ให้ทุกไฟล์ที่เป็น js/jquery รู้จัก                        
 </script>
 <script src="<?php echo base_url() ?>assets/js/auto_vatbuy.js"  type="text/javascript"></script>

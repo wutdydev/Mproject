@@ -4,9 +4,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Model_manage extends CI_Model {
 
+     public function query_close_job() {
+        $sql = "update main_data set setting_edit = '1' WHERE setting_edit = 0";
+        $this->db->query($sql);
+    }
+    
+    public function query_paperorder_update($ppo_id,$job,$cid) {
+        $sql = "update tb_vatbuy set ppo_id = '$ppo_id' WHERE ppo_job='$job' and ppo_cid ='$cid' and ppo_id is null and tb_vat_from = 2";
+        $this->db->query($sql);
+        return ($this->db->affected_rows() >= 1) ? true : false; //return กลับไปด้วยว่าทำสำเร็จหรือไม่
+    }
+    
     public function all_main_data() {
         $sql = "select * from main_data where statusjob != 2 order by data_id DESC";
         return $this->db->query($sql)->result();
+    }
+    
+    public function update_stlog($code,$job,$cid) {
+        $sql = "update paper_stock_log set main_code= '" . $code . "' WHERE ppsl_job='$job' and pps_cid='$cid' and ppsl_job is not null and main_code is null";
+        $this->db->query($sql);
     }
     
     public function all_main_data_update($code,$id) {
@@ -22,56 +38,13 @@ class Model_manage extends CI_Model {
            ";
         return $this->db->query($sql)->result();
     }
-    
-    public function query_replace_list() {
-        $sql = "select * from export_detail_test where ex_detail ='ออกรวม' and ex_detail_ex = 1 ";
-        return $this->db->query($sql)->result();
-    }
-    
-    public function query_exall_list() {
-        $sql = "select * from export_detail_test where ex_name IN('ใบกำกับภาษี/ใบเสร็จรับเงิน','ใบวางบิล') and ex_detail_ex = 1 and ex_company IN ('1','2','3','4')";
-        return $this->db->query($sql)->result();
-    }
-    
-    public function query_exall_list_may() {
-        $sql = "select * from export_detail_test where ex_name IN('ใบปะหน้าใบเพื่อวางบิล','ใบปะหน้าใบวางบิล','ใบปะหน้าใบกำกับภาษี') and ex_detail_ex = 1";
-        return $this->db->query($sql)->result();
-    }
-    
-    
-    public function query_exall_list_update($num,$id) {
-        $sql = "update export_detail_test set ex_num_true= '" . $num . "' WHERE ex_id='$id' and ex_num_true is null ";
-        $this->db->query($sql);
-        return ($this->db->affected_rows() >= 1) ? true : false; //return กลับไปด้วยว่าทำสำเร็จหรือไม่
-    }
-    
+
+
     public function query_user_count() {
         $sql = "select COUNT(id) as count from user where us_setting_date = 0 ";
         return $this->db->query($sql)->result_array();
     }
     
-    public function vball_list() {
-        $sql = "select * from export_detail_test where ex_name IN('ใบกำกับภาษี/ใบเสร็จรับเงิน') and ex_detail_ex = 1 and ex_detail = 'ออกรวม' ";
-        return $this->db->query($sql)->result();
-    }
-    
-    public function bv_update_all($code,$id) {
-        $sql = "update export_detail_test set ex_main_code= '" . $code . "' WHERE ex_id='$id' ";
-        $this->db->query($sql);
-        return ($this->db->affected_rows() >= 1) ? true : false; //return กลับไปด้วยว่าทำสำเร็จหรือไม่
-    }
-    
-    public function bv_update($code,$JOBMIW,$cid) {
-        $sql = "update export_detail_test set ex_main_code= '" . $code . "' WHERE ex_jobmiw='$JOBMIW' and ex_company = '$cid' and ex_name IN('ใบกำกับภาษี/ใบเสร็จรับเงิน') and ex_detail_ex = 1 and ex_main_code IS NULL";
-        $this->db->query($sql);
-        return ($this->db->affected_rows() >= 1) ? true : false; //return กลับไปด้วยว่าทำสำเร็จหรือไม่
-    }
-    
-    public function r_update($code,$JOBMIW,$cid) {
-        $sql = "update recieve_money set rc_main_code= '" . $code . "' WHERE rc_num_job='$JOBMIW' and rc_company = '$cid' and rc_main_code IS NULL";
-        $this->db->query($sql);
-        return ($this->db->affected_rows() >= 1) ? true : false; //return กลับไปด้วยว่าทำสำเร็จหรือไม่
-    }
         
     public function query_user_update_o($date) {
         $sql = "update user set us_setting_date = '$date' WHERE type != 1 and type != 7 ";

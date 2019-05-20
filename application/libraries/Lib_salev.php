@@ -15,36 +15,17 @@ class Lib_salev {
 
         if ($this->CI->uri->segment(3) == 'Manage') {
             $this->CI->session->set_userdata('data_uri', "Salev/Search/Manage");
-            
+           
             $data['name'] = "ค้นหาเลขที่ใบเสนอราคา";
             $data['title_name'] = "ค้นหาเลขที่ใบเสนอราคา";
             $data['file'] = "search";
             $data['footer'] = "blank";
-            $data['show'] = 0;
-            
-        }else if ($this->CI->uri->segment(3) == 'Show') {
-            
-            $data['name'] = "ค้นหาเลขที่ใบเสนอราคา";
-            $data['title_name'] = "ค้นหาเลขที่ใบเสนอราคา";
-            $data['file'] = "search";
-            $data['footer'] = "f_search";
-            $data['show'] = 1;
-            $data['query'] = $this->CI->Model_Msalev->query_query_search($_POST['text_search']);
-            
-        }else if ($this->CI->uri->segment(3) == 'Allow') {
-            
-            $data['name'] = "ค้นหาเลขที่ใบเสนอราคา";
-            $data['title_name'] = "ค้นหาเลขที่ใบเสนอราคา";
-            $data['file'] = "search";
-            $data['footer'] = "f_all_F_1";
-            $data['show'] = 1;
-            $data['query'] = $this->CI->Model_Msalev->query_query_search($_POST['text_search']);
-            
-        } else {
+            return $data;
+        }else {
             $dataj['name'] = "รูปแบบ URL ไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง";
             alertjs($dataj);
         }
-        return $data;
+        
     }
 
     public function check_pp30() {
@@ -85,6 +66,7 @@ class Lib_salev {
             $data['svv_15'] = null;
             $data['svv_16'] = null;
         } else if ($this->CI->uri->segment(3) == 'List') {
+            $this->fixbu(); //check สิทธิ์การเข้าใช้งาน
             $this->CI->session->set_userdata('data_uri', "Salev/PP30/List");
             $data['name'] = "รายการ ภ.พ.30";
             $data['title_name'] = "รายการ ภ.พ.30";
@@ -281,9 +263,9 @@ class Lib_salev {
         $this->CI->load->model('Model_Msalev');
         $this->CI->load->helper('All');
         $dataj['base'] = base_url("Salev/"); //เอาไว้ใช้ alert
+        
         if ($this->CI->uri->segment(3) == 'View' and ! empty($this->CI->uri->segment(4))) {
             $result = $this->CI->Model_Msalev->query_salevalue_show($this->CI->uri->segment(4));
-
             $ret_data['name'] = 'สถานะ';
             $ret_data['tt_name'] = 'สถานะของกระบวณการของ JOB';
             $ret_data['file'] = 'view';
@@ -446,7 +428,7 @@ class Lib_salev {
                 }
             } else {//ในกรณีที่ปิดไปแล้ว
                 $warn = warn_danger("JOB นี้ปิดไปแล้วไม่สามารถจัดการข้อมูลได้");
-                $btn2 = "";
+                $btn2 = "<button type='submit' name='sm' id='sm' class='btn btn-outline btn-danger  btn-lg '><i class='fa fa-save' ></i> แก้ไขต้นทุน</button><br><br>";
                 $ret_data['form'] = $form;
             }
 
@@ -577,6 +559,12 @@ class Lib_salev {
             $ret_data['query'] = $this->CI->Model_Msalev->query_salevalue_list("and tb1.statusjob = 0 and tb1.md_approved = 0 ");
             $ret_data['footer'] = "f_salevalue_md";
             return $ret_data;
+        } else if ($this->CI->uri->segment(3) == 'Success' and ! empty($this->CI->uri->segment(4))) {
+             $this->CI->Model_Msalev->query_maindata_success($this->CI->uri->segment(4));
+                echo "<script>
+                  window.close(0);
+                  </script>"; //แสดง alert และเด้งกลับไปที่หน้าเดิม
+                
         } else if ($this->CI->uri->segment(3) == 'UNApprove') {
             $this->fixbu(); //check สิทธิ์การเข้าใช้งาน
             $this->CI->session->set_userdata('data_uri', "Salev/Maindata/UNApprove");
@@ -662,35 +650,35 @@ class Lib_salev {
                     $status_md = 0;
                 }
             }
-
-            $data_pps['pps_id1'] = $this->ins_stock($_POST['pps_id1'], 1);   //ไปอัปเดต stock ทีละตัว
-            $data_pps['pps_id2'] = $this->ins_stock($_POST['pps_id2'], 2);
-            $data_pps['pps_id3'] = $this->ins_stock($_POST['pps_id3'], 3);
-            $data_pps['pps_id4'] = $this->ins_stock($_POST['pps_id4'], 4);
-            $data_pps['pps_id5'] = $this->ins_stock($_POST['pps_id5'], 5);
-            $data_pps['pps_id6'] = $this->ins_stock($_POST['pps_id6'], 6);
-            $data_pps['pps_id7'] = $this->ins_stock($_POST['pps_id7'], 7);
-            $data_pps['pps_id8'] = $this->ins_stock($_POST['pps_id8'], 8);
-            $data_pps['pps_id9'] = $this->ins_stock($_POST['pps_id9'], 9);
-
-            $data_id = $this->CI->Model_Msalev->ins_maindatadetail($data_pps); //เพิ่มข้อมูล main_data_detail
-            if ($_POST["typesale_id"] == 'T0002' or $_POST['cus_id'] == '2097' or $_POST['cus_id'] == '2099'or $_POST['cus_id'] == '2100') { //ใบส่งของ ถ้าเป็น JOB ใน้ครือ / JOB ONLINE จะสร้างให้ Auto
-                $this->CI->Model_Msalev->query_delivery_auto_ins($data_id);
-            }
-
+            
             $data_post['status_ex'] = $status_ex;
             $data_post['status_md'] = $status_md;
             $data_post['setting_edit'] = $setting_edit;
-            $data_post['data_id'] = $data_id;
-            $data_ins = $this->CI->Model_Msalev->ins_maindata($data_post); //เพิ่มข้อมูล main_data
-            $code = $this->create_maindata_code($data_post['data_id'], $this->CI->session->userdata('bu')); //เอาไอดีล่าสุด ไปสร้างรหัสลูกค้า
-            $this->CI->Model_Msalev->maindata_code($code, $data_post['data_id']); //เอา code ที่ได้ ไปอัปเดตเพื่อสร้างรหัสต่อ
+            $data_id = $this->CI->Model_Msalev->ins_maindata($data_post); //เพิ่มข้อมูล main_data
+            $code = $this->create_maindata_code($data_id, $this->CI->session->userdata('bu')); //เอาไอดีล่าสุด ไปสร้างรหัสลูกค้า
+            $this->CI->Model_Msalev->maindata_code($code, $data_id); //เอา code ที่ได้ ไปอัปเดตเพื่อสร้างรหัสต่อ
+            $data_pps['data_id'] = $data_id;
+             if ($_POST["typesale_id"] == 'T0002' or $_POST['cus_id'] == '2097' or $_POST['cus_id'] == '2099'or $_POST['cus_id'] == '2100') { //ใบส่งของ ถ้าเป็น JOB ใน้ครือ / JOB ONLINE จะสร้างให้ Auto
+                $this->CI->Model_Msalev->query_delivery_auto_ins($data_id);
+            }
+
+            $data_pps['pps_id1'] = $this->ins_stock($_POST['pps_id1'], 1,$code);   //ไปอัปเดต stock ทีละตัว
+            $data_pps['pps_id2'] = $this->ins_stock($_POST['pps_id2'], 2,$code);
+            $data_pps['pps_id3'] = $this->ins_stock($_POST['pps_id3'], 3,$code);
+            $data_pps['pps_id4'] = $this->ins_stock($_POST['pps_id4'], 4,$code);
+            $data_pps['pps_id5'] = $this->ins_stock($_POST['pps_id5'], 5,$code);
+            $data_pps['pps_id6'] = $this->ins_stock($_POST['pps_id6'], 6,$code);
+            $data_pps['pps_id7'] = $this->ins_stock($_POST['pps_id7'], 7,$code);
+            $data_pps['pps_id8'] = $this->ins_stock($_POST['pps_id8'], 8,$code);
+            $data_pps['pps_id9'] = $this->ins_stock($_POST['pps_id9'], 9,$code);
+            
+            $data_ins = $this->CI->Model_Msalev->ins_maindatadetail($data_pps); //เพิ่มข้อมูล main_data_detail
             $this->session_warn($data_ins);
 
-            redirect("Salev/Maindata/EDIT/" . $data_post['data_id']);
+            redirect("Salev/Maindata/EDIT/" . $data_id);
         } else if ($this->CI->uri->segment(3) == 'EDIT') {
 
-            $data = $this->CI->Model_Msalev->query_salevalue_show($this->CI->uri->segment(4)); //ข้อมูล stock เดิม
+            $result = $this->CI->Model_Msalev->query_salevalue_show($this->CI->uri->segment(4)); //เช็คสิทธิ์การแก้ไขข้อมูล - ข้อมูลเดิม
             $data_pps['pps_id1'] = $this->edit_stock($_POST['pps_id1'], 1);   //ไปเช็คอัปเดต stock ทีละตัว
             $data_pps['pps_id2'] = $this->edit_stock($_POST['pps_id2'], 2);
             $data_pps['pps_id3'] = $this->edit_stock($_POST['pps_id3'], 3);
@@ -702,8 +690,6 @@ class Lib_salev {
             $data_pps['pps_id9'] = $this->edit_stock($_POST['pps_id9'], 9);
             $data_pps['data_id'] = $this->CI->uri->segment(4);
 
-
-            $result = $this->CI->Model_Msalev->query_salevalue_show($this->CI->uri->segment(4)); //เช็คสิทธิ์การแก้ไขข้อมูล
             $date_job = $result[0]['tb2_date_job'];
             $date_job = strtotime($date_job);
             $date_job_2mounth = date('Y-m-d', strtotime("+ 2 month", $date_job));
@@ -738,11 +724,7 @@ class Lib_salev {
                 $this->CI->Model_Msalev->update_maindata_detail2($data_pps);
             }
 
-
-
-
-
-            $this->CI->Model_Msalev->ins_maindata_log($data); //เก็บประวัติการแก้ไขข้อมูลทุกครั้งว่าแก้อะไรไปบ้าง
+            $this->CI->Model_Msalev->ins_maindata_log($result); //เก็บประวัติการแก้ไขข้อมูลทุกครั้งว่าแก้อะไรไปบ้าง
         } else if ($this->CI->uri->segment(3) == 'Upload') {
 
             $this->CI->load->library('Lib_upload'); //ไปโหลด library ของ upload ซ้อนมาอีกที
@@ -756,12 +738,14 @@ class Lib_salev {
         $this->CI->load->model('Model_Msalev');
         $data = $this->CI->Model_Msalev->query_salevalue_show($this->CI->uri->segment(4)); //ไปเอาค่าเดิมมาคำนวณ
 
+        //$pps_id คือค่าจาก $_POST 1-9
+        //$data[0]['tb2_pps_id' . $id] คือค่าเดิมข้อมูล JOB ก่อนแก้ไข
+        
         if ($pps_id >= 1) {//กรณีมีข้อมูลในช่อง stock
             if ($pps_id != $data[0]['tb2_pps_id' . $id] and $data[0]['tb2_pps_id' . $id] >= 1) { //ไปอัปเดต STOCK ถ้ากรณีมีการเปลี่ยนแปลง เปลี่ยนจากข้อมูล A ไป B
                 $r_data_n = $this->CI->Model_Msalev->query_stock_show($pps_id); //stock ใหม่ 
                 $r_data_s = $this->CI->Model_Msalev->query_stock_show($data[0]['tb2_pps_id' . $id]); //stock เดิม
-                $r_data_sl = $this->CI->Model_Msalev->query_stocklog_show($data[0]['tb2_pps_id' . $id], $data[0]['tb1_cid'], $data[0]['tb1_JOBMIW']); //ประวัติ stock log เดิม
-
+                $r_data_sl = $this->CI->Model_Msalev->query_stocklog_show($data[0]['tb2_pps_id' . $id], $data[0]['tb1_cid'], $data[0]['tb1_main_code']); //ประวัติ stock log เดิม
                 if ($r_data_sl[0]['ppsl_status'] == 1) { //กรณีรับเข้า stock ไปแล้ว
                     $value_num = $r_data_sl[0]['ppsl_num'] / $r_data_s[0]['pps_pack'];
                     $num_log = $r_data_s[0]['ppc_num'] + $value_num;
@@ -775,12 +759,12 @@ class Lib_salev {
                 $data_post['pps_cid'] = $data[0]['tb1_cid'];
                 $data_post['main_code'] = $data[0]['tb1_main_code'];
                 $data_post['ppc_id'] = $r_data_s[0]['ppc_id'];
-                $this->CI->Model_Msalev->maindata_ins_stock($data_post, $id);
+                $this->CI->Model_Msalev->maindata_ins_stock($data_post, $id,$data[0]['tb1_main_code']);
 
                 return $pps_id;
-            } else if ($pps_id == $data[0]['tb2_pps_id' . $id]) {//ถ้า stock ไม่มีการเปลี่ยนแปลง แต่เปลี่ยนจำนวน หรือราคา/เปลี่ยนอื่นๆ
+            } else if ($pps_id == $data[0]['tb2_pps_id' . $id]) {//ถ้า stock ไม่มีการเปลี่ยนแปลง แต่เปลี่ยนจำนวน หรือราคา/เปลี่ยนอื่นๆ และ ไม่ใช่ค่า null
                 $r_data_s = $this->CI->Model_Msalev->query_stock_show($data[0]['tb2_pps_id' . $id]);
-                $r_data_sl = $this->CI->Model_Msalev->query_stocklog_show($data[0]['tb2_pps_id' . $id], $data[0]['tb1_cid'], $data[0]['tb1_JOBMIW']);
+                $r_data_sl = $this->CI->Model_Msalev->query_stocklog_show($data[0]['tb2_pps_id' . $id], $data[0]['tb1_cid'], $data[0]['tb1_main_code']);
 
                 //ทำกรณีมีการเปลี่ยนแปลงตัวเลขใดเลขนึงของ STOCK แต่ใช้ STOCK เดิม
                 if ($_POST['ppt_id' . $id] != $data[0]['tb2_ppt_id' . $id] or $_POST['pps_num' . $id] != $data[0]['tb2_pps_num' . $id] or $_POST['pps_cost' . $id] != $data[0]['tb2_pps_cost' . $id] or $_POST['am_paper' . $id] != $data[0]['tb2_am_paper' . $id]) {
@@ -798,21 +782,23 @@ class Lib_salev {
                     $this->CI->Model_Msalev->update_stocklog($_POST['pps_num' . $id], $_POST['pps_cost' . $id], $_POST['am_paper' . $id], $_POST['ppt_id' . $id], $r_data_sl[0]['ppsl_id']);
                 }
                 return $pps_id;
-            } else { //กรณีจากค่าว่าง ให้มีข้อมูล
+            } else{ //กรณีจากค่าว่าง ให้มีข้อมูล
                 $data_s = $this->CI->Model_Msalev->query_stock_show($_POST['pps_id' . $id]);
                 $data_post['pps_id'] = $_POST['pps_id' . $id];
                 $data_post['pp_id'] = $data_s[0]['pp_id'];
                 $data_post['pps_cid'] = $data[0]['tb1_cid'];
                 $data_post['main_code'] = $data[0]['tb1_main_code'];
                 $data_post['ppc_id'] = $data_s[0]['ppc_id'];
-                $this->CI->Model_Msalev->maindata_ins_stock($data_post, $id);
+                $this->CI->Model_Msalev->maindata_ins_stock($data_post, $id,$data[0]['tb1_main_code']);
                 return $pps_id;
             }
+            
         } else { //กรณีช่องข้อมูลว่างหรือลบออก
-            if (!empty($data[0]['tb2_pps_id' . $id]) >= 1) { //กรณีมีข้อมูลอยู่แต่ลบออก
+            
+            echo "ไม่มีเข้า";
+            if ($data[0]['tb2_pps_id' . $id] >= 1) { //กรณีมีข้อมูลอยู่แต่ลบออก
                 $r_data_s = $this->CI->Model_Msalev->query_stock_show($data[0]['tb2_pps_id' . $id]);
-                $r_data_sl = $this->CI->Model_Msalev->query_stocklog_show($data[0]['tb2_pps_id' . $id], $data[0]['tb1_cid'], $data[0]['tb1_JOBMIW']);
-
+                $r_data_sl = $this->CI->Model_Msalev->query_stocklog_show($data[0]['tb2_pps_id' . $id], $data[0]['tb1_cid'], $data[0]['tb1_main_code']);
                 if ($r_data_sl[0]['ppsl_status'] == 1) { //กรณีรับเข้า stock ไปแล้ว
                     $value_num = $r_data_sl[0]['ppsl_num'] / $r_data_s[0]['pps_pack'];
                     $num_log = $r_data_s[0]['ppc_num'] + $value_num;
@@ -822,23 +808,24 @@ class Lib_salev {
                 }
                 $this->CI->Model_Msalev->delete_stocklog($r_data_sl[0]['ppsl_id']); //ลบอันเดิมที่เคยเข้าระบบไป
             }
-
-            return 0;
+            return "null";
         }
+        
     }
 
-    private function ins_stock($pps_id, $id) {
+    private function ins_stock($pps_id, $id, $code) {
         $this->CI->load->model('Model_Msalev');
 
         if (!empty($pps_id)) {
             $data = $this->CI->Model_Msalev->query_stock_show($pps_id); //เอาไอดี ไปหาเลขของกระดาษมาใส่
             $data_post['pps_id'] = $pps_id;
             $data_post['pp_id'] = $data[0]['pp_id'];
+            $data_post['pps_cid'] = $data[0]['pps_cid'];
             $data_post['ppc_id'] = $data[0]['ppc_id'];
             $data_post['pp_id'] = $data[0]['pp_id'];
-            $this->CI->Model_Msalev->maindata_ins_stock($data_post, $id);
+            $this->CI->Model_Msalev->maindata_ins_stock($data_post, $id, $code);
         } else {
-            $pps_id = 0;
+            $pps_id = "null";
         }
         return $pps_id;
     }

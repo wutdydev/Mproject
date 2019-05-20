@@ -19,9 +19,9 @@
             <?php
             if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
                 ?>
-                <ul class="nav navbar-nav navbar-left navbar-top-links">
+<!--                <ul class="nav navbar-nav navbar-left navbar-top-links">
                     <li><a href="<?php echo base_url('#'); ?>"><i class="fa fa-truck fa-fw"></i> Messenger</a></li>
-                </ul>
+                </ul>-->
                 <ul class="nav navbar-nav navbar-left navbar-top-links">
                     <li><a href="<?php echo base_url('Other/'); ?>"><i class="fa fa-external-link fa-fw"></i> ระบบอื่นๆ</a></li>
                 </ul>
@@ -89,20 +89,10 @@
                                     <li>
                                         <a target="_blank" href="<?php echo base_url('Other/Manage/ordercode'); ?>">Ordercode</a>
                                     </li>
-                                    
                                     <li>
-                                        <a target="_blank" href="<?php echo base_url('Other/Manage/number'); ?>">num vb</a>
+                                        <a target="_blank" href="<?php echo base_url('Other/Manage/CJ'); ?>">ปิด JOB ที่แก้ไข</a>
                                     </li>
-                                    
-                                    <li>
-                                        <a target="_blank" href="<?php echo base_url('Other/Manage/numberm'); ?>">num vb may</a>
-                                    </li>
-                                    
-                                     <li>
-                                        <a target="_blank" href="<?php echo base_url('Other/Manage/Sales'); ?>">Sales</a>
-                                    </li>
-                                    </li>
-                                    
+                    
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>

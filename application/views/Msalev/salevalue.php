@@ -7,6 +7,54 @@
         if (obj.value == text)
             obj.value = '';
     }
+    $(document).ready(function () {
+        $('.md').on('focus', function () {
+            if ($(this).val() == 0) {
+                $(this).val("");
+            } else {
+                var nmber = $(this).val().replace(",", "");
+                var sp = nmber.split('.');
+                var spc = sp.length > 1 ? '.' + sp[1] : ''; //เช็คก่อนว่ามี array กี่ตัว / มีทศนิยมหรือไม่
+                $(this).val(sp[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") + spc);
+            }
+        });
+
+        $(".inputnumber").keydown(function (event) {
+            var keym = $.inArray(event.keyCode, [13, 8, 46, 9, 16, 190, 110]); //allow link https://keycode.info/
+
+            if ((event.ctrlKey || event.metaKey) && event.keyCode == 86) {
+//                        console.log("Not CTRL V!!");
+                event.preventDefault();
+            }
+
+            if (event.keyCode >= 49 && event.keyCode <= 57 || event.keyCode >= 96 && event.keyCode <= 105 || keym !== -1) { //keyboard 0-9 and numpad 0-9 
+//                        $(this).addClass("is-valid");
+                return;
+            } else {
+                event.preventDefault();
+            }
+
+        });
+
+        var base_url = "<?php echo base_url() ?>";
+        $("#JOBMIW").keyup(function () {
+            if ($(this).val().length >= 1) {
+                $.post(base_url + "Salev/Ajaxload/JOBMIW", {
+                    data1: $("#JOBMIW").val()},
+                function (data) {
+                    $("#msg1").html(data);
+                }
+                );
+
+            } else {
+                $("#msg1").html("No Search");
+            }
+        });
+
+
+
+    });
+
 </script>
 <?php
 $m = date("m");
@@ -43,7 +91,7 @@ $y = date("Y") + 543;
                         <td width='20%'>
                             <div class="form-group">
                                 <input class="form-control css-require" type="date" name="date_job" id="date_job"  value="<?php echo $query[0]['tb2_date_job']; ?>" >
-                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                <span class="form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td width='20%'>
@@ -83,7 +131,11 @@ $y = date("Y") + 543;
                         </td>
                         <td width='20%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" value="<?php echo $query[0]['tb4_fname_thai']; ?> <?php echo $query[0]['tb4_lname_thai']; ?>" placeholder="ชื่อพนักงานที่ติดต่อประสานงานกับลูกค้า" name="emp_coordinator_name" id="emp_coordinator_name">
+                                <input class="form-control css-require" type="text" value="<?php
+                                if (!empty($query[0]['tb4_fname_thai'])) {
+                                    echo $query[0]['tb4_fname_thai'] . " " . $query[0]['tb4_lname_thai'];
+                                }
+                                ?>" placeholder="ชื่อพนักงานที่ติดต่อประสานงานกับลูกค้า" name="emp_coordinator_name" id="emp_coordinator_name">
                                 <input class="form-control css-require" type="hidden"  placeholder="กรอกชื่อผู้ขาย"  value="<?php echo $query[0]['tb1_emp_coordinator']; ?>" name="emp_coordinator" id="emp_coordinator">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
@@ -94,31 +146,38 @@ $y = date("Y") + 543;
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                           <th>เลขที่ใบเสนอราคา <!-- <span id="msg1"></span>--></th>
-                            <th>เลขที่ใบสั่ง</th>
-                            <th>ชื่อลูกค้า</th>
-                            <th>สำนักงาน</th>
-                        </tr>
+                            <th><div id="msg1">เลขที่ใบเสนอราคา</div></th>
+                    <th>เลขที่ใบสั่ง</th>
+                    <th>ชื่อลูกค้า</th>
+                    <th>สำนักงาน</th>
+                    </tr>
                     </thead>
                     <tr>
                         <td width='20%'>
-                            <input style="text-align: right" class="form-control" type="text" name="JOBMIW" id="JOBMIW" value="<?php
-                            if (!empty($query[0]['tb1_JOBMIW'])) {
-                                echo $query[0]['tb1_JOBMIW'];
-                            } else {
-                                echo "/$m/$y";
-                            }
-                            ?>">
+                            <div class="form-group has-feedback" >
+                                <input style="text-align: right" class="form-control  css-require" type="text" name="JOBMIW" id="JOBMIW" value="<?php
+                                if (!empty($query[0]['tb1_JOBMIW'])) {
+                                    echo $query[0]['tb1_JOBMIW'];
+                                } else {
+                                    echo "/$m/$y";
+                                }
+                                ?>">
+                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            </div> 
+
 
                         </td>
                         <td width='20%'>
-                            <input style="text-align: right" class="form-control" type="text" name="JOBORDER" id="JOBORDER" value="<?php
-                            if (!empty($query[0]['tb1_JOBORDER'])) {
-                                echo $query[0]['tb1_JOBORDER'];
-                            } else {
-                                echo "/$m/$y";
-                            }
-                            ?>">
+                            <div class="form-group has-feedback" >
+                                <input style="text-align: right" class="form-control css-require" type="text" name="JOBORDER" id="JOBORDER" value="<?php
+                                if (!empty($query[0]['tb1_JOBORDER'])) {
+                                    echo $query[0]['tb1_JOBORDER'];
+                                } else {
+                                    echo "/$m/$y";
+                                }
+                                ?>">
+                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            </div> 
 
                         </td>
                         <td width='40%'>
@@ -149,8 +208,8 @@ $y = date("Y") + 543;
                             <td width='20%'>
 
                                 <div class="form-group">
-                                    <input class="form-control  css-require" type="date" name="date_finish" id="date_finish" value="<?php echo $query[0]['tb2_date_finish']; ?>">
-                                    <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                    <input class="form-control css-require" type="date" name="date_finish" id="date_finish" value="<?php echo $query[0]['tb2_date_finish']; ?>">
+                                    <span class="form-control-feedback" aria-hidden="true"></span>
                                 </div> 
                             </td>
                             <td width='20%'>
@@ -208,26 +267,28 @@ $y = date("Y") + 543;
                             </div> 
                         </td>
                         <td width='10%'>
-                            <input class="form-control" type="text" name="am_page" id="am_page" value="<?php echo empt_fm($query[0]['tb2_am_page']); ?>" >
+                            <div class="form-group has-feedback">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_page" id="am_page" value="<?php echo empt_fm($query[0]['tb2_am_page']); ?>" >
+                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            </div> 
+
                         </td>
                         <td width='15%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="unit" id="unit" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);"  value="<?php echo empt_fm($query[0]['tb2_unit']); ?>" >
+                                <input class="form-control css-require inputnumber md" type="text" name="unit" id="unit" onKeyUp="Sum_number();"  value="<?php echo empt_fm($query[0]['tb2_unit']); ?>" >
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
 
                         <td width='13%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit" id="p_unit" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);"  value="<?php echo empt_fm($query[0]['tb2_p_unit']); ?>" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require  inputnumber md" type="text" name="p_unit" id="p_unit" onKeyUp="Sum_number();"  value="<?php echo empt_fm($query[0]['tb2_p_unit']); ?>" onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td width='13%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_job" id="am_job" value="<?php echo empt_fm($query[0]['tb2_am_job']); ?>" readonly>
+                                <input class="form-control css-require  inputnumber md" type="text" name="am_job" id="am_job" value="<?php echo empt_fm($query[0]['tb2_am_job']); ?>" readonly>
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -249,15 +310,15 @@ $y = date("Y") + 543;
                         </td>
                         <td width='15%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_otha" id="am_otha" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_am_otha']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_otha" id="am_otha" value="<?php echo empt_fm($query[0]['tb2_am_otha']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td width='13%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unita" id="p_unita" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_p_unita']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unita" id="p_unita" value="<?php echo empt_fm($query[0]['tb2_p_unita']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -277,15 +338,15 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_othb" id="am_othb" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_am_othb']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_othb" id="am_othb" value="<?php echo empt_fm($query[0]['tb2_am_othb']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unitb" id="p_unitb" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_p_unitb']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unitb" id="p_unitb" value="<?php echo empt_fm($query[0]['tb2_p_unitb']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -305,15 +366,15 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_othc" id="am_othc" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_am_othc']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_othc" id="am_othc" value="<?php echo empt_fm($query[0]['tb2_am_othc']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unitc" id="p_unitc" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_p_unitc']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unitc" id="p_unitc" value="<?php echo empt_fm($query[0]['tb2_p_unitc']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -333,15 +394,15 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_othd" id="am_othd" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_am_othd']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_othd" id="am_othd" value="<?php echo empt_fm($query[0]['tb2_am_othd']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unitd" id="p_unitd" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_p_unitd']); ?>" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unitd" id="p_unitd" value="<?php echo empt_fm($query[0]['tb2_p_unitd']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -361,15 +422,15 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_othe" id="am_othe" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_am_othe']); ?>"  onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_othe" id="am_othe" value="<?php echo empt_fm($query[0]['tb2_am_othe']); ?>"  onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unite" id="p_unite" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_p_unite']); ?>"  onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unite" id="p_unite" value="<?php echo empt_fm($query[0]['tb2_p_unite']); ?>"  onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -390,7 +451,7 @@ $y = date("Y") + 543;
                             </td>
                             <td>
                                 <div class="form-group has-feedback">
-                                    <input class="form-control css-require" type="text" name="Surcharge_ex" id="Surcharge_ex" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_Surcharge_ex']); ?>" >
+                                    <input class="form-control css-require" type="text" name="Surcharge_ex" id="Surcharge_ex" value="<?php echo empt_fm($query[0]['tb2_Surcharge_ex']); ?>" >
                                     <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                 </div> 
                             </td>
@@ -399,7 +460,7 @@ $y = date("Y") + 543;
                     } else {
                         ?>
 
-                        <input class="form-control css-require" type="hidden" name="Surcharge_ex" id="Surcharge_ex" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_Surcharge_ex']); ?>" >
+                        <input class="form-control css-require" type="hidden" name="Surcharge_ex" id="Surcharge_ex" value="<?php echo empt_fm($query[0]['tb2_Surcharge_ex']); ?>" >
 
                         <?php
                     }
@@ -410,8 +471,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="discount" id="discount" onkeypress="return CheckNumeric()" value="<?php echo empt_fm($query[0]['tb2_discount']); ?>"  onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="discount" id="discount" value="<?php echo empt_fm($query[0]['tb2_discount']); ?>"  onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -458,8 +519,8 @@ $y = date("Y") + 543;
                         </td>
                         <td width='12%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num1" id="pps_num1"  value="<?php echo empt_fm($query[0]['tb2_pps_num1']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num1" id="pps_num1"  value="<?php echo empt_fm($query[0]['tb2_pps_num1']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -478,8 +539,8 @@ $y = date("Y") + 543;
 
                         <td width='13%'>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost1" id="pps_cost1" value="<?php echo empt_fm($query[0]['tb2_pps_cost1']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost1" id="pps_cost1" value="<?php echo empt_fm($query[0]['tb2_pps_cost1']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -508,8 +569,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num2" id="pps_num2" value="<?php echo empt_fm($query[0]['tb2_pps_num2']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num2" id="pps_num2" value="<?php echo empt_fm($query[0]['tb2_pps_num2']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -525,8 +586,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost2" id="pps_cost2" value="<?php echo empt_fm($query[0]['tb2_pps_cost2']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost2" id="pps_cost2" value="<?php echo empt_fm($query[0]['tb2_pps_cost2']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -554,8 +615,8 @@ $y = date("Y") + 543;
                             <input class="form-control" type="hidden" name="pps_id3" id="pps_id3" value="<?php echo $query[0]['tb2_pps_id3'] ?>">
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num3" id="pps_num3" value="<?php echo empt_fm($query[0]['tb2_pps_num3']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num3" id="pps_num3" value="<?php echo empt_fm($query[0]['tb2_pps_num3']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -571,8 +632,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost3" id="pps_cost3" value="<?php echo empt_fm($query[0]['tb2_pps_cost3']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost3" id="pps_cost3" value="<?php echo empt_fm($query[0]['tb2_pps_cost3']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -601,8 +662,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num4" id="pps_num4" value="<?php echo empt_fm($query[0]['tb2_pps_num4']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num4" id="pps_num4" value="<?php echo empt_fm($query[0]['tb2_pps_num4']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -618,8 +679,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost4" id="pps_cost4" value="<?php echo empt_fm($query[0]['tb2_pps_cost4']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost4" id="pps_cost4" value="<?php echo empt_fm($query[0]['tb2_pps_cost4']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -648,8 +709,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num5" id="pps_num5" value="<?php echo empt_fm($query[0]['tb2_pps_num5']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num5" id="pps_num5" value="<?php echo empt_fm($query[0]['tb2_pps_num5']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -665,8 +726,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost5" id="pps_cost5" value="<?php echo empt_fm($query[0]['tb2_pps_cost5']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost5" id="pps_cost5" value="<?php echo empt_fm($query[0]['tb2_pps_cost5']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -696,8 +757,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num6" id="pps_num6" value="<?php echo empt_fm($query[0]['tb2_pps_num6']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num6" id="pps_num6" value="<?php echo empt_fm($query[0]['tb2_pps_num6']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -713,8 +774,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost6" id="pps_cost6" value="<?php echo empt_fm($query[0]['tb2_pps_cost6']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost6" id="pps_cost6" value="<?php echo empt_fm($query[0]['tb2_pps_cost6']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -746,8 +807,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num7" id="pps_num7" value="<?php echo empt_fm($query[0]['tb2_pps_num7']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num7" id="pps_num7" value="<?php echo empt_fm($query[0]['tb2_pps_num7']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -763,8 +824,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost7" id="pps_cost7" value="<?php echo empt_fm($query[0]['tb2_pps_cost7']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost7" id="pps_cost7" value="<?php echo empt_fm($query[0]['tb2_pps_cost7']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -794,8 +855,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num8" id="pps_num8" value="<?php echo empt_fm($query[0]['tb2_pps_num8']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num8" id="pps_num8" value="<?php echo empt_fm($query[0]['tb2_pps_num8']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -812,8 +873,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost8" id="pps_cost8" value="<?php echo empt_fm($query[0]['tb2_pps_cost8']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost8" id="pps_cost8" value="<?php echo empt_fm($query[0]['tb2_pps_cost8']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -844,8 +905,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_num9" id="pps_num9" value="<?php echo empt_fm($query[0]['tb2_pps_num9']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_num9" id="pps_num9" value="<?php echo empt_fm($query[0]['tb2_pps_num9']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -862,8 +923,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="pps_cost9" id="pps_cost9" value="<?php echo empt_fm($query[0]['tb2_pps_cost9']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="pps_cost9" id="pps_cost9" value="<?php echo empt_fm($query[0]['tb2_pps_cost9']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -895,8 +956,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_plate1" id="am_plate1" value="<?php echo empt_fm($query[0]['tb2_am_plate1']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);"  onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_plate1" id="am_plate1" value="<?php echo empt_fm($query[0]['tb2_am_plate1']); ?>" onKeyUp="Sum_number();
+                                        "  onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -917,8 +978,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_plate2" id="am_plate2" value="<?php echo empt_fm($query[0]['tb2_am_plate2']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);"  onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_plate2" id="am_plate2" value="<?php echo empt_fm($query[0]['tb2_am_plate2']); ?>" onKeyUp="Sum_number();
+                                        "  onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -939,8 +1000,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_plate3" id="am_plate3" value="<?php echo empt_fm($query[0]['tb2_am_plate3']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_plate3" id="am_plate3" value="<?php echo empt_fm($query[0]['tb2_am_plate3']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -962,8 +1023,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_print1" id="am_print1" value="<?php echo empt_fm($query[0]['tb2_am_print1']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_print1" id="am_print1" value="<?php echo empt_fm($query[0]['tb2_am_print1']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -984,8 +1045,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_print2" id="am_print2" value="<?php echo empt_fm($query[0]['tb2_am_print2']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);"  onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_print2" id="am_print2" value="<?php echo empt_fm($query[0]['tb2_am_print2']); ?>" onKeyUp="Sum_number();
+                                        "  onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1006,8 +1067,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_print3" id="am_print3" value="<?php echo empt_fm($query[0]['tb2_am_print3']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);"  onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_print3" id="am_print3" value="<?php echo empt_fm($query[0]['tb2_am_print3']); ?>" onKeyUp="Sum_number();
+                                        "  onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1027,15 +1088,15 @@ $y = date("Y") + 543;
 
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth1" id="am_oth1" value="<?php echo empt_fm($query[0]['tb2_am_oth1']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth1" id="am_oth1" value="<?php echo empt_fm($query[0]['tb2_am_oth1']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit1" id="p_unit1" value="<?php echo empt_fm($query[0]['tb2_p_unit1']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit1" id="p_unit1" value="<?php echo empt_fm($query[0]['tb2_p_unit1']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1053,15 +1114,15 @@ $y = date("Y") + 543;
 
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth2" id="am_oth2" value="<?php echo empt_fm($query[0]['tb2_am_oth2']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth2" id="am_oth2" value="<?php echo empt_fm($query[0]['tb2_am_oth2']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit2" id="p_unit2" value="<?php echo empt_fm($query[0]['tb2_p_unit2']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit2" id="p_unit2" value="<?php echo empt_fm($query[0]['tb2_p_unit2']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1079,15 +1140,15 @@ $y = date("Y") + 543;
 
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth3" id="am_oth3" value="<?php echo empt_fm($query[0]['tb2_am_oth3']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth3" id="am_oth3" value="<?php echo empt_fm($query[0]['tb2_am_oth3']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit3" id="p_unit3" value="<?php echo empt_fm($query[0]['tb2_p_unit3']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit3" id="p_unit3" value="<?php echo empt_fm($query[0]['tb2_p_unit3']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1105,15 +1166,15 @@ $y = date("Y") + 543;
 
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth4" id="am_oth4" value="<?php echo empt_fm($query[0]['tb2_am_oth4']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth4" id="am_oth4" value="<?php echo empt_fm($query[0]['tb2_am_oth4']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit4" id="p_unit4" value="<?php echo empt_fm($query[0]['tb2_p_unit4']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit4" id="p_unit4" value="<?php echo empt_fm($query[0]['tb2_p_unit4']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1131,15 +1192,15 @@ $y = date("Y") + 543;
 
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth5" id="am_oth5" value="<?php echo empt_fm($query[0]['tb2_am_oth5']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth5" id="am_oth5" value="<?php echo empt_fm($query[0]['tb2_am_oth5']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit5" id="p_unit5" value="<?php echo empt_fm($query[0]['tb2_p_unit5']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit5" id="p_unit5" value="<?php echo empt_fm($query[0]['tb2_p_unit5']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1157,15 +1218,15 @@ $y = date("Y") + 543;
 
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth6" id="am_oth6" value="<?php echo empt_fm($query[0]['tb2_am_oth6']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth6" id="am_oth6" value="<?php echo empt_fm($query[0]['tb2_am_oth6']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit6" id="p_unit6" value="<?php echo empt_fm($query[0]['tb2_p_unit6']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit6" id="p_unit6" value="<?php echo empt_fm($query[0]['tb2_p_unit6']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1183,15 +1244,15 @@ $y = date("Y") + 543;
 
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth7" id="am_oth7" value="<?php echo empt_fm($query[0]['tb2_am_oth7']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth7" id="am_oth7" value="<?php echo empt_fm($query[0]['tb2_am_oth7']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit7" id="p_unit7" value="<?php echo empt_fm($query[0]['tb2_p_unit7']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit7" id="p_unit7" value="<?php echo empt_fm($query[0]['tb2_p_unit7']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1208,15 +1269,15 @@ $y = date("Y") + 543;
                         </td>
                         <td colspan="2">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="am_oth8" id="am_oth8" value="<?php echo empt_fm($query[0]['tb2_am_oth8']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="am_oth8" id="am_oth8" value="<?php echo empt_fm($query[0]['tb2_am_oth8']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="p_unit8" id="p_unit8" value="<?php echo empt_fm($query[0]['tb2_p_unit8']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="p_unit8" id="p_unit8" value="<?php echo empt_fm($query[0]['tb2_p_unit8']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1235,8 +1296,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="Sur_cost" id="Sur_cost" value="<?php echo empt_fm($query[0]['tb2_Sur_cost']); ?>" onkeypress="return CheckNumeric()"  onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="Sur_cost" id="Sur_cost" value="<?php echo empt_fm($query[0]['tb2_Sur_cost']); ?>"  onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1248,8 +1309,8 @@ $y = date("Y") + 543;
 
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="profit_miw" id="profit_miw" value="<?php echo empt_fm($query[0]['tb2_profit_miw']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="profit_miw" id="profit_miw" value="<?php echo empt_fm($query[0]['tb2_profit_miw']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1260,8 +1321,8 @@ $y = date("Y") + 543;
                         </td>
                         <td>
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="comm_sw" id="comm_sw" value="<?php echo empt_fm($query[0]['tb2_comm_sw']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="comm_sw" id="comm_sw" value="<?php echo empt_fm($query[0]['tb2_comm_sw']); ?>" onKeyUp="Sum_number();
+                                        " onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1272,8 +1333,7 @@ $y = date("Y") + 543;
                         </td>
                         <td   bgcolor="#FFDC3C">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="extra_discount" id="extra_discount" value="<?php echo empt_fm($query[0]['tb2_extra_discount']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="extra_discount" id="extra_discount" value="<?php echo empt_fm($query[0]['tb2_extra_discount']); ?>" onKeyUp="Sum_number();" onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>
@@ -1284,8 +1344,7 @@ $y = date("Y") + 543;
                         </td>
                         <td   bgcolor="#FFDC3C">
                             <div class="form-group has-feedback">
-                                <input class="form-control css-require" type="text" name="extra_discount_click" id="extra_discount_click" value="<?php echo empt_fm($query[0]['tb2_extra_discount_click']); ?>" onkeypress="return CheckNumeric()" onKeyUp="Sum_number();
-                                        FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)">
+                                <input class="form-control css-require inputnumber md" type="text" name="extra_discount_click" id="extra_discount_click" value="<?php echo empt_fm($query[0]['tb2_extra_discount_click']); ?>" onKeyUp="Sum_number();"onBlur="checkValue(this, this.defaultValue)">
                                 <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             </div> 
                         </td>

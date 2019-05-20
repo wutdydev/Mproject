@@ -2,10 +2,40 @@
 <script src="<?php echo base_url() ?>assets/js/js_check_null_order.js" type="text/javascript"></script>
 <script src="<?php echo base_url() ?>assets/js/ex_orderlist.js" type="text/javascript"></script>
 <link rel="stylesheet" href="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.css">
+<style>
+    .modal-dialog{
+        position: relative;
+        display: table; 
+        overflow-y: auto;    
+        overflow-x: auto;
+        width: auto;
+        min-width: 90%;   
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var base_url = "<?php echo base_url() ?>";
+        $(".modala").click(function () {
+            if ($(this).attr('name').length >= 1) {
+                $.post(base_url + "Salev/Ajaxload/vatorder", {
+                    data1: $(this).attr('name')},
+                function (data) {
+                    $("#mod").html(data);
+                }
+                );
+
+            } else {
+                $("#mod").html("No Search");
+            }
+
+        });
+    });
+</script>
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header"><?php echo $tt_name; ?> JOB <?php echo $query[0]['tb1_ppo_job'] ?></h1>
+            <h1 class="page-header"><img src= "<?php echo base_url() ?>assets/logo/<?php echo $query[0]['tb8_company_img'] ?>" align="center" width="45" height="40"/>  <?php echo $tt_name; ?> JOB <?php echo $query[0]['tb1_ppo_job'] ?></h1>
         </div>
 
         <div class="col-lg-3">
@@ -20,14 +50,14 @@
         <div class="col-lg-3">
             <div class="hero-widget well well-sm">
                 <div class="text">
-                    <h3><?php echo warning_vatbuy($query[0]['tb1_ppo_total'], $query[0]['tb5_sum_amount']) ?> <?php echo iconcount_vat($query[0]['tb5_id'], $query[0]['tb1_ppo_id'], $query[0]['tb5_no_vat']) ?></h3>
+                    <h3 class="modala" data-toggle="modal" name="<?php echo $query[0]['tb1_ppo_id'] ?>" data-target="#myModal"><?php echo warning_vatbuy($query[0]['tb1_ppo_total'], $query[0]['tb5_sum_amount']) ?> <?php echo iconcount_vat($query[0]['tb5_id'], $query[0]['tb1_ppo_id'], $query[0]['tb5_no_vat']) ?></h3>
                     <label class="text-muted">เลขที่ใบกำกับภาษี</label>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-6"><!--        ส่งข้อมูลขอแก้ไข Stock-->
-             <?php echo $form ?>
+            <?php echo $form ?>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -36,7 +66,7 @@
         <div class="row">
 
             <div class="col-lg-12">
-                <div class="panel <?php echo panel_order($query[0]['tb1_ppo_edit'],$query[0]['tb6_pel_id']) ?>">
+                <div class="panel <?php echo panel_order($query[0]['tb1_ppo_edit'], $query[0]['tb6_pel_id']) ?>">
                     <div class="panel-heading">
                         <b><?php echo $name ?></b>
                     </div>
@@ -174,8 +204,8 @@
                                                 </td>
                                                 <td width='70%'> 
                                                     <div class="form-group has-feedback">
-                                                        <input class="form-control css-require"  onKeyUp="check_null();" name="ppc_name" type="text" id="ppc_name" value="<?php echo $query[0]['tb3_ppc_name'] ?>" readonly>
-                                                        <input class="form-control css-require" name="ppc_id" type="hidden" id="ppc_id" value="<?php echo $query[0]['tb1_ppc_id'] ?>" readonly>
+                                                        <input class="form-control css-require"  onKeyUp="check_null();" name="ppc_name" type="text" id="ppc_name" value="<?php echo $query[0]['tb3_ppc_name'] ?>">
+                                                        <input class="form-control css-require" name="ppc_id" type="hidden" id="ppc_id" value="<?php echo $query[0]['tb1_ppc_id'] ?>">
                                                         <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                                                     </div> 
                                                 </td>
@@ -248,11 +278,11 @@
                                         ?>
                                         <tr>
                                             <td width="4%" align="center"><?php echo $i ?></td>
-                                            <td width="30%"><?php echo text_paper($rest_ol->tbs1_pp_name . " " . $rest_ol->tbs1_pp_gram, $rest_ol->tb5_pps_id, $rest_ol->tb3_ppo_save) ?> <font color="red"><?php echo $rest_ol->tbs2_ppcs_company ?></font></td>
-                                            <td width="7%" align="center"><?php echo $rest_ol->tbs1_pp_gram ?></td>
-                                            <td width="7%" align="center"><?php echo number_format($rest_ol->tb1_ppol_num, 2); ?></td>
+                                            <td width="20%"><?php echo text_paper($rest_ol->tbs1_pp_name . " " . $rest_ol->tbs1_pp_gram, $rest_ol->tb5_pps_id, $rest_ol->tb3_ppo_save) ?></td>
+                                            <td width="7%" align="center"><?php echo $rest_ol->tbs1_pp_size ?></td>
+                                            <td width="10%" align="center"><?php echo number_format($rest_ol->tb1_ppol_num, 2); ?></td>
                                             <td width="7%" align="center"><?php echo $rest_ol->tb4_ppt_name ?></td>
-                                            <td width="7%" align="center"><?php echo number_format($rest_ol->tb1_ppol_cost, 2); ?></td>
+                                            <td width="10%" align="center"><?php echo number_format($rest_ol->tb1_ppol_cost, 2); ?></td>
                                             <td width="7%" align="center"><?php echo number_format($rest_ol->tb1_ppol_discount, 2); ?></td>
                                             <td width="7%" align="right"><?php echo number_format($rest_ol->tb1_ppol_sum, 2); ?></td>
                                             <td>
@@ -445,5 +475,22 @@
 </div>
 
 
+<div class="modal fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">รายการใบกำกับภาษีซื้อ</h4>
+            </div>
+            <div class="modal-body">
+                <p id="mod"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 

@@ -144,20 +144,26 @@ class Lib_bv {
         $dataj['base'] = base_url("Salev/"); //เอาไว้ใช้ alert
 
         if ($this->CI->uri->segment(3) == 'List') {
+            $this->fixbu();
+            $this->CI->session->set_userdata('data_uri', "Salev/CN/List");
             $data['name'] = "ใบลดหนี้";
             $data['tt_name'] = "รายการใบลดหนี้";
             $data['file'] = "bvo_list";
             $data['footer'] = "f_bvo_list";
             $data['type'] = "Other";
+            $data['query_bufix'] = $this->CI->Model_Msalev->query_company_list();
             $data['query'] = $this->CI->Model_Msalev->query_bvo_show_list($data['name']);
 
             $this->CI->session->set_userdata('data_uri', "Salev/CN/List"); //set link เวลา redirect ของเฉพาะใบกำกับและใบวางบิล
             return $data;
         } else if ($this->CI->uri->segment(3) == 'Select') {
+            $this->fixbu();
+            $this->CI->session->set_userdata('data_uri', "Salev/CN/Select");
             $data['name'] = "ใบลดหนี้";
             $data['tt_name'] = "เลือกใบกำกับภาษี";
             $data['file'] = "cn_list";
             $data['footer'] = "f_cn_list";
+            $data['query_bufix'] = $this->CI->Model_Msalev->query_company_list();
             $data['query'] = $this->CI->Model_Msalev->query_bvo_show_list('ใบกำกับภาษี/ใบเสร็จรับเงิน');
             return $data;
         } else if ($this->CI->uri->segment(3) == 'EX' and ! empty($this->CI->uri->segment(4))) {
@@ -718,12 +724,16 @@ class Lib_bv {
         $dataj['base'] = base_url("Salev/"); //เอาไว้ใช้ alert
 
         if ($this->CI->uri->segment(3) == 'BILL') {//เข้าใบวางบิล
+            $this->fixbu();
+            $this->CI->session->set_userdata('data_uri', "Salev/COVER/BILL");
             $data['name'] = "ใบปะหน้าใบวางบิล";
             $data['name_old'] = "ใบวางบิล";
             $data['tt_name'] = "ใบปะหน้าใบวางบิล";
             $data['type'] = "BILL";
             $data['short'] = "CB"; //ตัวย่อเอาไว้ทำ code ของใบต่างๆ
         } else if ($this->CI->uri->segment(3) == 'VAT') {//เข้าใบกำกับภาษี
+            $this->fixbu();
+            $this->CI->session->set_userdata('data_uri', "Salev/COVER/VAT");
             $data['name'] = "ใบปะหน้าใบกำกับภาษี";
             $data['name_old'] = "ใบกำกับภาษี/ใบเสร็จรับเงิน";
             $data['tt_name'] = "ใบปะหน้าใบกำกับภาษี";
@@ -735,12 +745,15 @@ class Lib_bv {
         }
 
         if ($this->CI->uri->segment(4) == 'EX') {
+            $this->CI->session->set_userdata('data_uri', "Salev/COVER/".$data['type']."/EX");
             $data['file'] = "cover_ex";
             $data['footer'] = "f_cover_ex";
             $data['query'] = $this->CI->Model_Msalev->query_bvo_show_list($data['name_old']);
+            $data['query_bufix'] = $this->CI->Model_Msalev->query_company_list();
         } else {
             $data['file'] = "bvo_list";
             $data['footer'] = "f_bvo_list";
+            $data['query_bufix'] = $this->CI->Model_Msalev->query_company_list();
             $data['query'] = $this->CI->Model_Msalev->query_bvo_show_list($data['name']);
             $this->CI->session->set_userdata('data_uri', "Salev/COVER/" . $data['type']); //set link เวลา redirect ของเฉพาะใบกำกับและใบวางบิล
         }
@@ -871,7 +884,7 @@ class Lib_bv {
             $data['date_bvr'] = $datac['result'][0]['ex_date_num'];
         } else {
             $data['year'] = substr(date("Y") + 543, -2);
-            $data['no_bvr'] = $this->conv_lastnum($dataln[0]['exnum'], $result[0]['tb1_ex_company'], 1, $data['name']) . "/" . $data['year']; //แปลงตัวเลข / เลขที่ล่าสุด
+            $data['no_bvr'] = $this->conv_lastnum($dataln[0]['exnum'], $result[0]['tb1_ex_company'], 1, $data['name']); //แปลงตัวเลข / เลขที่ล่าสุด. "/" . $data['year']
             $data['book_number'] = $datalb[0]['ex_run']; //เล่มที่ล่าสุด
             $data['date_bvr'] = date("Y-m-d");
         }
@@ -954,9 +967,12 @@ class Lib_bv {
             $data['footer'] = "f_bvo";
             $data['book'] = $datalb[0]['ex_run'];
         } else if ($this->CI->uri->segment(4) == 'EX') { // ต้องไม่มี่าว่าง
+            $this->fixbu();
+            $this->CI->session->set_userdata('data_uri', "Salev/BVO/" . $data['type']."/EX"); //set link เวลา redirect ของเฉพาะใบกำกับและใบวางบิล
             $data['tt_name'] = "ออก" . $data['name'] . "รวม";
             $data['file'] = "bvos_list";
             $data['footer'] = "f_bvos_list";
+            $data['query_bufix'] = $this->CI->Model_Msalev->query_company_list();
             $data['query'] = $this->CI->Model_Msalev->query_salevalue_list("and tb1.statusjob = 0");
         } else if ($this->CI->uri->segment(4) == 'EDIT' and ! empty($this->CI->uri->segment(5))) { // ต้องไม่มี่าว่าง
             $data['tt_name'] = "แก้ไขข้อมูล" . $data['name'];
@@ -967,7 +983,11 @@ class Lib_bv {
         } else if ($this->CI->uri->segment(4) == 'DC' and ! empty($this->CI->uri->segment(5))) { // ต้องไม่มี่าว่าง
 
             $this->CI->Model_Msalev->query_bvo_update_dc($_POST['ex_date_check'.$this->CI->uri->segment(5)],$this->CI->uri->segment(5));
-            redirect($this->CI->session->userdata('data_uri'));
+            
+                echo "<script>
+                  window.close(0);
+                  </script>"; //แสดง alert และเด้งกลับไปที่หน้าเดิม
+            
             
         } else if ($this->CI->uri->segment(4) == 'Delete' and ! empty($this->CI->uri->segment(5))) { // ต้องไม่มี่าว่าง
             $data_delete = $this->CI->Model_Msalev->query_bvo_update_exstatus($this->CI->uri->segment(5)); //ลบข้อมูลลูกค้าตาม segment id
@@ -985,20 +1005,23 @@ class Lib_bv {
             $html['type'] = "A4";
             $html['name'] = $data['name'];
             $this->CI->lib_pdf->showpdf($html);
-        } else if ($this->CI->uri->segment(4) == 'List' and ! empty($this->CI->uri->segment(5))) { // ต้องไม่มี่าว่าง เปลี่ยนสถานะใบต่างๆ
+        } /*else if ($this->CI->uri->segment(4) == 'List' and ! empty($this->CI->uri->segment(5))) { // ต้องไม่มี่าว่าง เปลี่ยนสถานะใบต่างๆ
             $resc = $this->CI->Model_Msalev->query_company_show($this->CI->uri->segment(5));
             $data['file'] = "bvo_list";
             $data['footer'] = "f_bvo_list";
             $data['tt_name'] = "รายการ" . $data['name'] . $resc[0]['company_name'];
             $data['query'] = $this->CI->Model_Msalev->query_bvo_show_list2($data['name'], $this->CI->uri->segment(5));
-        } else {
+        }*/ else {
+            $this->fixbu();
+            $this->CI->session->set_userdata('data_uri', "Salev/BVO/" . $data['type']); //set link เวลา redirect ของเฉพาะใบกำกับและใบวางบิล
             $data['file'] = "bvo_list";
             $data['footer'] = "f_bvo_list";
             $data['tt_name'] = "รายการ" . $data['name'];
             $data['query'] = $this->CI->Model_Msalev->query_bvo_show_list($data['name']);
+            $data['query_bufix'] = $this->CI->Model_Msalev->query_company_list();
         }
 
-        $this->CI->session->set_userdata('data_uri', "Salev/BVO/" . $data['type']); //set link เวลา redirect ของเฉพาะใบกำกับและใบวางบิล
+        
         return $data;
     }
 
@@ -1219,7 +1242,7 @@ class Lib_bv {
                     $data['name'] = "ยอดเงินไม่ถูกต้อง!!! หากต้องการออก$rec แบบ $_POST[selector] จำนวนที่ถูกต้องอยู่ที่ " . number_format($datar[0]['tb2_am_recieve'], 2);
                     alertjs($data);
                 }
-
+                
                 $datas['title_jobname'] = 'งาน :';
                 $datas['ex_list'] = $datar[0]['tb1_jobname'];
                 $datas['ex_list1'] = $datar[0]['tb2_d_otha'];
@@ -1485,9 +1508,9 @@ class Lib_bv {
         $data['ex_code'] = $result[0]['tb1_ex_code'];
 
         if ($result[0]['tb1_ex_detail_other'] == 'แยกใบวางบิล') {
-            $data['c_cost'] = null;
-        } else {
             $data['c_cost'] = "and export_detail_test.ex_amount = " . $result[0]['tb1_ex_amount'];
+        } else {
+            $data['c_cost'] = "";
         }
         $data['ex_num_cd'] = $result[0]['tb1_ex_num_cd'];
         $data['company_img'] = $result[0]['tb3_company_img'];
@@ -1737,6 +1760,13 @@ class Lib_bv {
         } else {
             $data['ex_date_check'] = null;
             $data['ex_code'] = null;
+            
+            //ถ้าเป็นในเครือให้ยอมรับอัตโนมัต กรณีออกใหม่
+            $cus_id = array("2100", "2099", "2097", "2098");
+            if(in_array($data['cus_id'], $cus_id)){
+             $data['status'] = 1;
+            }
+            
             $id = $this->CI->Model_Msalev->save_bvr($data); //ไปบันทึกข้อมูล
             $ex_code = $this->create_bvr_code($data['short'], $id, $data['cid']); //สร้าง code ใบต่างๆ มาอัปเดตทีหลัง
             $this->CI->Model_Msalev->update_bvr_code($ex_code, $id);
@@ -1823,6 +1853,12 @@ class Lib_bv {
             return $this->CI->session->set_userdata('warn_salev', warn_danger('ทำรายการไม่ถูกต้อง!!!'));
         }
         
+    }
+    
+    private function fixbu() {
+        if (empty($this->CI->session->userdata('Fixbu'))) {
+            $this->CI->session->set_userdata('Fixbu', $this->CI->session->userdata('perrm_cid'));
+        }
     }
     
 }

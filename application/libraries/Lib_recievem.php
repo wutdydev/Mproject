@@ -76,6 +76,11 @@ class Lib_recievem {
             $data['name'] = "บันทึกการรับเงินประจำวัน";
             $data['tt_name'] = "บันทึกการรับเงินประจำวัน";
             $data['query'] = null;
+            
+            $data['rc_date_current'] = date("Y-m-d");
+            $data['rc_date_re'] = date("Y-m-d");
+            $data['echo'][] = "";
+            
         }else if ($this->CI->uri->segment(3) == 'LIST') {
             $this->CI->session->set_userdata('data_uri', "Salev/ReceiveM/LIST");
             $this->fixbu(); //check สิทธิ์การเข้าใช้งาน
@@ -86,11 +91,23 @@ class Lib_recievem {
             $data['query_bufix'] = $this->CI->Model_Msalev->list_company();
             $data['query'] = $this->CI->Model_Msalev->query_recievem_list();
         }else if ($this->CI->uri->segment(3) == 'EDIT' and !empty ($this->CI->uri->segment(4))) {
+            $result = $this->CI->Model_Msalev->query_recievem_show($this->CI->uri->segment(4));
             $data['file'] = "rem";
             $data['footer'] = "f_rem";
             $data['name'] = "แก้ไขข้อมูลบันทึกการรับเงิน";
             $data['tt_name'] = "แก้ไขข้อมูลบันทึกการรับเงิน";
-            $data['query'] = $this->CI->Model_Msalev->query_recievem_show($this->CI->uri->segment(4));
+            $data['query'] = $result;
+            $array = explode(",",$result[0]['tb1_ex_code']);
+          
+            $i = 0;
+            foreach ($array as $res){
+                $i++;
+                $resultvb = $this->CI->Model_Msalev->query_exvb_show($res);
+                $data['echo'][] = "<div class='padd' id=" . $i . ">" . $i . ". <code class='inputcss'>" . $resultvb[0]['ex_num_true'] . ": " . $resultvb[0]['ex_name'] . "<i class='fa fa-remove iconc' id=" . $i . " name = " . $resultvb[0]['ex_id'] . "></i></code></div>";
+            }
+            
+            $data['rc_date_current'] = $data['query'][0]['tb1_rc_date_current'];
+            $data['rc_date_re'] = $data['query'][0]['tb1_rc_date_re'];
             
         }else if ($this->CI->uri->segment(3) == 'Delete' and !empty ($this->CI->uri->segment(4))) {
             

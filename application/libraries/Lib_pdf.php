@@ -20,7 +20,7 @@ class Lib_pdf {
         $this->pdf->SetAutoFont();
         $this->pdf->SetDisplayMode('fullpage', 'two');
         $this->pdf->WriteHTML($data['html']);
-        $this->pdf->Output(filename_check($data['save_as'], $data['name'], "pdf"), download_check($data['save_as']));
+        $this->pdf->Output($data['name'].".pdf", download_check($data['save_as']));
 
 //        'D': download the PDF file
 //'I': serves in-line to the browser

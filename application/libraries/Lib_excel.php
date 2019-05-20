@@ -20,17 +20,19 @@ class Lib_excel extends PHPExcel {
         libxml_use_internal_errors(true);
         $this->excel = new PHPExcel();
         $this->excel->setActiveSheetIndex(0);
+        $this->excel->getActiveSheet()->getStyle();
         $this->excel->getActiveSheet()->setTitle('Sheet 1');
+        
         
         $this->reader = PHPExcel_IOFactory::createReader('HTML');
         $this->reader->loadIntoExisting($tmpfile, $this->excel);
         unlink($tmpfile); // delete temporary file because it isn't needed anymore
-        $filename = $data['name'] . ".xls";
+        $filename = $data['name'] . ".xlsx";
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // header for .xlxs file
         header('Content-Disposition: attachment;filename=' . $filename); // specify the download file name
         header('Cache-Control: max-age=0');
         ob_end_clean();
-        
+
 
         $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
         $writer->save('php://output');

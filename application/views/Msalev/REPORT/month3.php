@@ -8,7 +8,7 @@
     </head>
 
     <body>
-        <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 25px; right: 25px; ">(M-03) PDF <?php echo $date_n ?></div>
+        <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 25px; right: 25px; ">(<?php echo $svr_code ?>) <?php echo $type_file ?> <?php echo date("Y-m-d H:i:s") ?></div>
         <div align="center">
 
             <h2 align="center"><img src= "<?php echo base_url() ?>assets/logo/<?php echo $query_c[0]['company_img'] ?>" align="center" width="120" height="100"></h2>

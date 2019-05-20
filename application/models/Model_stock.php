@@ -309,7 +309,7 @@ class Model_stock extends CI_Model {
             LEFT JOIN paper_order_list tb2 on tb2.ppo_id = tb1.ppo_id
             LEFT JOIN paper_contact_print tb3 on tb3.ppc_id = tb1.ppc_id
             LEFT JOIN paper_contact_supp tb4 on tb4.ppcs_id = tb1.ppo_atten
-            LEFT JOIN(select COUNT(id) as tb5_id,SUM(amount+vat7) as tb5_sum_amount,no_vat,ppo_job,ppo_cid,ppo_waitpay,ppo_id from tb_vatbuy GROUP BY ppo_id) tb5 on tb5.ppo_id LIKE CONCAT('%',tb1.ppo_id,'%')
+            LEFT JOIN(select COUNT(id) as tb5_id,SUM(amount+vat7) as tb5_sum_amount,no_vat,ppo_job,ppo_cid,ppo_waitpay,ppo_id from tb_vatbuy GROUP BY ppo_id) tb5 on tb5.ppo_id = tb1.ppo_id
             LEFT JOIN(select COUNT(pel_id) as tb6_pel_id,ppo_id,pel_find from paper_export_log where pel_status_export = 1 AND pel_type = 2 GROUP by ppo_id) tb6 on tb6.ppo_id = tb1.ppo_id
             LEFT JOIN company_new tb7 on tb7.cid = tb1.ppo_open_cid
             LEFT JOIN company_new tb8 on tb8.cid = tb1.ppo_cid
@@ -772,6 +772,7 @@ class Model_stock extends CI_Model {
 
     public function query_order_update($id) {
         $sql = "update paper_order set ppo_main_code= '" . $_POST['main_code'] . "'
+            ,ppc_id = '" . $_POST['ppc_id'] . "'
             ,ppo_job = '" . $_POST['JOBMIW'] . "'
             ,ppo_jobname = '" . htmlspecialchars($_POST['jobname']) . "'
             ,ppo_from = '" . $_POST['pp_form'] . "'
@@ -1166,6 +1167,12 @@ class Model_stock extends CI_Model {
     public function query_supplier_id_selected($id) {
         $sql = "SELECT * FROM paper_contact_supp where ppcs_id = '$id'";
         return $this->db->query($sql)->result_array();
+    }
+    
+     public function query_supplier_id_update_type($type,$id) {
+        $sql = "UPDATE paper_contact_supp SET ppcs_type = '" . $type . "' WHERE ppcs_id='" . $id . "' ";
+        $this->db->query($sql);
+        return ($this->db->affected_rows() >= 1) ? true : false; //return กลับไปด้วยว่าทำสำเร็จหรือไม่
     }
 
     public function query_supplier_code_selected($code) {

@@ -1,5 +1,35 @@
 
 <link rel="stylesheet" href="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.css">
+<style>
+    .modal-dialog{
+    position: relative;
+    display: table; 
+    overflow-y: auto;    
+    overflow-x: auto;
+    width: auto;
+    min-width: 90%;   
+}
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var base_url = "<?php echo base_url() ?>";
+        $(".modala").click(function () {
+            if ($(this).attr('name').length >= 1) {
+                $.post(base_url + "Salev/Ajaxload/vatorder", {
+                    data1: $(this).attr('name')},
+                function (data) {
+                    $("#mod").html(data);
+                }
+                );
+
+            } else {
+                $("#mod").html("No Search");
+            }
+            
+        });
+    });
+</script>
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
@@ -53,7 +83,7 @@
                         <td align="center" width='5%'><img src= "<?php echo base_url() ?>assets/logo/<?php echo $res->t6_company_img ?>" align="center" width="30" height="25"/></td>
                         <td align="right" width='7%'><?php echo number_format($res->t1_ppo_total, 2) ?></td>
                         <td align="center" width='7%'><?php echo $res->tb7_pel_find ?></td>
-                        <td align='left'><font color="<?php echo $res->tb8_color_ppo_waitpay ?>"><?php echo warning_vatbuy($res->t1_ppo_total, $res->t8_sum_amount) ?> <?php echo iconcount_vat($res->t8_count, $res->t1_ppo_id, $res->t8_no_vat) ?></font></td>
+                        <td align='left'><font color="<?php echo $res->tb8_color_ppo_waitpay ?>" class="modala" data-toggle="modal" name="<?php echo $res->t1_ppo_id ?>" data-target="#myModal"><?php echo warning_vatbuy($res->t1_ppo_total, $res->t8_sum_amount) ?> <?php echo iconcount_vat($res->t8_count, $res->t1_ppo_id, $res->t8_no_vat) ?></font></td>
                         <td align='left'>
                             <button type="button" class="btn btn-outline btn-default btn-sm"  data-placement="top" title="รายละเอียดรายการสั่งซื้อ" onclick="window.open('<?php echo base_url('Stock/Order/Edit') . '/' . $res->t1_ppo_id ?>')">&nbsp;<i class="fa fa-search" ></i>&nbsp;</button>
                             <div class="btn-group">
@@ -111,5 +141,20 @@
         </div>
     </form>
 
-
+    <div class="modal fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">รายการใบกำกับภาษีซื้อ</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="mod"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

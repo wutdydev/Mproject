@@ -3,7 +3,20 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header"><?php echo $tt_name; ?> </h1>
+            <h1 class="page-header"><?php echo $tt_name; ?> 
+            <?php
+                if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
+                    ?>
+                    <button type="button" class="btn btn-outline btn-default"onclick="window.location = '<?php echo base_url('Salev/Maindata/Fixbu/0') ?>'" style="width: 100px;height: 74px" >ALL</button>   
+                    <?php
+                    foreach ($query_bufix as $resbf) {
+                        ?>
+                        <button type="button" class="btn btn-outline btn-default" onclick="window.location = '<?php echo base_url('Salev/Maindata/Fixbu') . '/' . $resbf->cid ?>'"><img src= "<?php echo base_url() ?>assets/logo/<?php echo $resbf->company_img ?>" align="center" width="80" height="60"></button>   
+                        <?php
+                    }
+                }
+                ?>
+            </h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>
@@ -33,7 +46,7 @@
                     <tr>
                         <td align="center" width="5%"><?php echo $i ?></td>
                         <td align="center" width="7%"><?php echo conv_dateno($res->tb1_ex_date_num) ?></td>
-                        <td align="center" width="10%"><img src= "<?php echo base_url() ?>assets/logo/<?php echo $res->tb3_company_img ?>" align="center" width="25" height="20"/> <?php echo $res->tb1_ex_jobmiw ?></td>
+                        <td align="center" width="10%"><img src= "<?php echo base_url() ?>assets/logo/<?php echo $res->tb3_company_img ?>" align="center" width="25" height="20"/> <?php echo convest_br($res->tb1_ex_jobmiw) ?></td>
                         <td align="center" width="6%"><a  class="confirmation2" href="<?php echo base_url('Salev/BVO/Other/Switch') . '/' . $res->tb1_ex_id ?>"><?php echo checkicon_bv($res->tb1_ex_status) ?> <?php echo $res->tb1_ex_num_true ?></a></td>
                         <td align="left" width="20%"><a href="<?php echo base_url('Salev/Customer/EDIT') . '/' . $res->tb2_cus_id ?>" target="_blank"><?php echo $res->tb2_cus_name ?></a></td>
                         <td align="center" width="10%"><?php echo $res->tb2_cus_taxno ?></td>

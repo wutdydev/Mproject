@@ -38,21 +38,17 @@ class Lib_manage {
             }
             echo "RUN ผิดไม่เป็นไรเขียนดักไว้แล้ว!!!!!!!!!";
             exit();
-        }  else if ($this->CI->uri->segment(3) == 'rcode') {
-            ini_set('memory_limit', '-1');
-            set_time_limit(-1);
-            $result = $this->CI->Model_manage->vball_list();
+        } else if ($this->CI->uri->segment(3) == 'M1') {
+
+            $result = $this->CI->Model_manage->query_exall_list();
             foreach ($result as $res) {
-                $str = $this->CI->Model_manage->r_update($res->ex_main_code, $res->ex_jobmiw, $res->ex_company);
-                if ($str == TRUE) {
-                    echo $res->ex_main_code . " --> yes <br>";
-                } else {
-                    echo $res->ex_main_code . " --> no <br>";
-                }
+                if (empty($res->ppo_code)) {
+                    $this->CI->Model_manage->query_exall_list_update("M ".$res->ex_num."/60", $res->ex_id);
+                } 
             }
             echo "RUN ผิดไม่เป็นไรเขียนดักไว้แล้ว!!!!!!!!!";
             exit();
-        } else if ($this->CI->uri->segment(3) == 'User') {
+        }   else if ($this->CI->uri->segment(3) == 'User') {
 
             $data['name'] = "รายชื่อพนักงาน";
             $data['title'] = "จัดการข้อมูลพนักงาน";
@@ -62,7 +58,13 @@ class Lib_manage {
             $data['query_count'] = $this->CI->Model_manage->query_user_count();
 
             return $data;
-        } else if ($this->CI->uri->segment(3) == 'OFF') {
+        } else if ($this->CI->uri->segment(3) == 'CJ') {
+   
+            $this->CI->Model_manage->query_close_job();
+            echo "RUN ผิดไม่เป็นไรเขียนดักไว้แล้ว!!!!!!!!!";
+            exit();
+            
+        }else if ($this->CI->uri->segment(3) == 'OFF') {
 
             $str = $this->CI->Model_manage->query_user_update_o(0);
             $this->session_warn($str);
@@ -81,21 +83,12 @@ class Lib_manage {
             }
             echo "RUN ผิดไม่เป็นไรเขียนดักไว้แล้ว!!!!!!!!!";
             exit();
-        }else if ($this->CI->uri->segment(3) == 'number') {
+        }else if ($this->CI->uri->segment(3) == 'stlog') {
             ini_set('memory_limit', '-1');
             set_time_limit(-1);
-            $result = $this->CI->Model_manage->query_exall_list();
+            $result = $this->CI->Model_manage->all_main_data();
             foreach ($result as $res) {
-                 $this->CI->Model_manage->query_exall_list_update(check_numvb($res->ex_num),$res->ex_id);
-            }
-            echo "RUN ผิดไม่เป็นไรเขียนดักไว้แล้ว!!!!!!!!!";
-            exit();
-        }else if ($this->CI->uri->segment(3) == 'numberm') {
-            ini_set('memory_limit', '-1');
-            set_time_limit(-1);
-            $result = $this->CI->Model_manage->query_exall_list_may();
-            foreach ($result as $res) {
-                 $this->CI->Model_manage->query_exall_list_update(check_numvb($res->ex_num),$res->ex_id);
+                 $this->CI->Model_manage->update_stlog($res->main_code,$res->JOBMIW,$res->cid);
             }
             echo "RUN ผิดไม่เป็นไรเขียนดักไว้แล้ว!!!!!!!!!";
             exit();

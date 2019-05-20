@@ -103,33 +103,32 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td width='55%'><input type="text" class="form-control" name="jobname" id="jobname" value="<?php echo $title_jobname . $jobname; ?>"></td>
-                                                    <td width='15%'><input type="text" style="text-align: right" class="form-control"  onKeyUp="Sum_number();FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)"  onkeypress="return CheckNumeric()" name="am_job" id="am_job" value="<?php echo empt_fm($am_job) ?>" <?php echo $readonly_bvr ?>></td> 
+                                                    <td width='55%'><input type="text" class="form-control" name="ex_list" id="ex_list" value="<?php echo $title_jobname . $ex_list; ?>"></td>
+                                                    <td width='15%'><input type="text" style="text-align: right" class="form-control" name="ex_total" id="ex_total" value="<?php echo empt_fm($ex_total) ?>" <?php echo $readonly_bvr ?>></td> 
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="text" class="form-control" name="d_otha" id="d_otha" value="<?php echo $d_otha ?>"></td>  
-                                                    <td><input type="text" style="text-align: right" class="form-control"  onKeyUp="Sum_number();FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)"  onkeypress="return CheckNumeric()" name="amounta" id="amounta" value="<?php echo empt_fm($amounta) ?>" <?php echo $readonly_bvr ?>></td> 
+                                                    <td><input type="text" class="form-control" name="ex_list1" id="ex_list1"  value="<?php echo $ex_list1 ?>"></td>  
+                                                    <td><input type="text" style="text-align: right" class="form-control" name="ex_total1" id="ex_total1" value="<?php echo empt_fm($ex_total1) ?>" <?php echo $readonly_bvr ?>></td> 
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="text" class="form-control" name="d_othb" id="d_othb" value="<?php echo $d_othb ?>"></td>  
-                                                    <td><input type="text" style="text-align: right" class="form-control"  onKeyUp="Sum_number();FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)"  onkeypress="return CheckNumeric()" name="amountb" id="amountb" value="<?php echo empt_fm($amountb) ?>" <?php echo $readonly_bvr ?>></td> 
+                                                    <td><input type="text" class="form-control" name="ex_list2" id="ex_list2" value="<?php echo $ex_list2 ?>"></td>  
+                                                    <td><input type="text" style="text-align: right" class="form-control" name="ex_total2" id="ex_total2" value="<?php echo empt_fm($ex_total2) ?>" <?php echo $readonly_bvr ?>></td> 
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="text" class="form-control" name="d_othc" id="d_othc" value="<?php echo $d_othc ?>"></td>  
-                                                    <td><input type="text" style="text-align: right" class="form-control" name="amountc"  onKeyUp="Sum_number();FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)"  onkeypress="return CheckNumeric()" id="amountc" value="<?php echo empt_fm($amountc) ?>" <?php echo $readonly_bvr ?>></td> 
+                                                    <td><input type="text" class="form-control" name="ex_list3" id="ex_list3" value="<?php echo $ex_list3 ?>"></td>  
+                                                    <td><input type="text" style="text-align: right" class="form-control" name="ex_total3" id="ex_total3" value="<?php echo empt_fm($ex_total3) ?>" <?php echo $readonly_bvr ?>></td> 
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="text" class="form-control" name="d_othd" id="d_othd" value="<?php echo $d_othd ?>"></td>  
-                                                    <td><input type="text" style="text-align: right" class="form-control" name="amountd"  onKeyUp="Sum_number();FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)"  onkeypress="return CheckNumeric()" id="amountd" value="<?php echo empt_fm($amountd) ?>" <?php echo $readonly_bvr ?>></td> 
+                                                    <td><input type="text" class="form-control" name="ex_list4" id="ex_list4" value="<?php echo $ex_list4 ?>"></td>  
+                                                    <td><input type="text" style="text-align: right" class="form-control" name="ex_total4" id="ex_total4" value="<?php echo empt_fm($ex_total4) ?>" <?php echo $readonly_bvr ?>></td> 
                                                 </tr>
                                                 <tr>
-                                                    <td><input type="text" class="form-control" name="d_othe" id="d_othe" value="<?php echo $d_othe ?>"></td>  
-                                                    <td><input type="text" style="text-align: right" class="form-control" name="amounte"  onKeyUp="Sum_number();FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)"  onkeypress="return CheckNumeric()" id="amounte" value="<?php echo empt_fm($amounte) ?>" <?php echo $readonly_bvr ?>></td> 
+                                                    <td><input type="text" class="form-control" name="ex_list5" id="ex_list5" value="<?php echo $ex_list5 ?>"></td>  
+                                                    <td><input type="text" style="text-align: right" class="form-control" name="ex_total5" id="ex_total5" value="<?php echo empt_fm($ex_total5) ?>" <?php echo $readonly_bvr ?>></td> 
                                                 </tr>
-
                                                 <tr>
-                                                    <td><input type="text" class="form-control" name="d_othf" id="d_othf" value="<?php echo $d_othf ?>"></td>  
-                                                    <td><input type="text" style="text-align: right" class="form-control" name="amountf"  onKeyUp="Sum_number();FormatCurrency(this);" onBlur="checkValue(this, this.defaultValue)"  onkeypress="return CheckNumeric()" id="amounte" value="<?php echo empt_fm($amountf) ?>" <?php echo $readonly_bvr ?>></td> 
+                                                    <td><input type="text" class="form-control" name="ex_list6" id="ex_list6" value="<?php echo $ex_list6 ?>"></td>  
+                                                    <td><input type="text" style="text-align: right" class="form-control" name="ex_total6"  id="ex_total6" value="<?php echo empt_fm($ex_total6) ?>" <?php echo $readonly_bvr ?>></td> 
                                                 </tr>
                                                      <input type="hidden" style="text-align: right" class="form-control" name="vat7" id="vat7" value="<?php echo empt_fm($vat7) ?>" readonly>
                                                      <input type="hidden" style="text-align: right" class="form-control" name="am_recieve" id="am_recieve" value="<?php echo empt_fm($am_recieve) ?>" readonly>

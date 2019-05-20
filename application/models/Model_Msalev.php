@@ -14,6 +14,11 @@ class Model_Msalev extends CI_Model {
         return $this->db->query($sql)->result();
     }
 
+    public function query_exvb_show($code) {
+        $sql = "select * from export_detail_test where ex_detail_ex = 1 and ex_code = '$code' ";
+        return $this->db->query($sql)->result_array();
+    }
+
     public function query_company_show($id) {
         $sql = "select * from company_new where cid = '$id' ";
         return $this->db->query($sql)->result_array();
@@ -29,8 +34,20 @@ class Model_Msalev extends CI_Model {
         return $this->db->query($sql)->result_array();
     }
 
+    public function query_search_jobmiw($search) {
+        $sql = "select COUNT(data_id) as count_id from main_data where statusjob = 0 and JOBMIW LIKE '%$search%' and cid IN('" . $this->session->userdata('perrm_cid') . "')";
+        return $this->db->query($sql)->result_array();
+    }
+
+    public function query_search_report($search) {
+        $sql = "select
+                IFNULL(svr_image,'blank.png') as tb1_img
+              from sv_report where svr_id = '$search'";
+        return $this->db->query($sql)->result_array();
+    }
+
     public function query_user() {
-        $sql = 'select * from main_data where statusjob = 0';
+        $sql = "select * from main_data where statusjob = 0";
         return $this->db->query($sql)->result()->row();
     }
 
@@ -48,7 +65,7 @@ class Model_Msalev extends CI_Model {
     }
 
     public function query_maindata_setting_edit($type, $id) {
-        $sql = "update main_data set setting_edit = '$type' WHERE data_id='$id' ";
+        $sql = "update main_data set setting_edit = '$type' and statusjob = 0 WHERE data_id='$id' ";
         $this->db->query($sql);
     }
 
@@ -66,7 +83,7 @@ class Model_Msalev extends CI_Model {
 
         return $this->db->query($sql)->result_array();
     }
-    
+
     public function query_maindata_year() {
         $sql = "select
         YEAR(tb2.date_job) as tb2_year
@@ -105,7 +122,7 @@ class Model_Msalev extends CI_Model {
         WHERE slr_code='$code' ";
         $this->db->query($sql);
     }
-    
+
     public function query_line_request_www($code) {
         $sql = "update sv_line_request set slr_status= '2'
             ,slr_type_approve = 2
@@ -149,7 +166,7 @@ class Model_Msalev extends CI_Model {
     }
 
     public function customer_send_edit($id) {
-        $sql = "select * from customer_send_edit where cse_id = '$id'";
+        $sql = "select * from sv_line_request where slr_type = '1' and slr_id = '$id' and slr_status = '2' ORDER BY id DESC limit 1";
         return $this->db->query($sql)->result_array();
     }
 
@@ -172,7 +189,7 @@ class Model_Msalev extends CI_Model {
                 ('$_POST[status_cus]','$_POST[type_cus]','$_POST[deduction]','$_POST[vat7]','$_POST[status_cus]$_POST[type_cus]$_POST[deduction]$_POST[vat7]'
                 ,'$_POST[cus_title]','" . htmlspecialchars($_POST['cus_name'], ENT_QUOTES) . "','" . htmlspecialchars($data['frist_name'], ENT_QUOTES) . "'
                 ,'" . htmlspecialchars($data['frist_name'], ENT_QUOTES) . "','" . htmlspecialchars($_POST['cus_tower'], ENT_QUOTES) . "','$_POST[cus_tel]','$_POST[cus_fax]','" . htmlspecialchars($_POST['cus_email'], ENT_QUOTES) . "'
-                ,'$_POST[cus_type_address]','$_POST[cus_prefix]','" . htmlspecialchars($data['address'], ENT_QUOTES) . "'
+                ,'$_POST[cus_type_address]','$_POST[cus_prefix]','" . htmlspecialchars($_POST['cus_address_ex'], ENT_QUOTES) . "'
                 ,'" . htmlspecialchars($_POST['cus_building'], ENT_QUOTES) . "','$_POST[cus_room]','$_POST[cus_floor]','$_POST[cus_number]'
                 ,'$_POST[cus_swine]','$_POST[cus_alley]','$_POST[cus_road]','$_POST[cus_sub_district]','$_POST[cus_district]'
                 ,'" . htmlspecialchars($_POST['cus_province'], ENT_QUOTES) . "','$_POST[cus_zipcode]','$_POST[cus_taxno]','$_POST[cus_namebuy]','$_POST[cus_telbuy]'
@@ -203,7 +220,7 @@ class Model_Msalev extends CI_Model {
                                    ,cus_tel='$_POST[cus_tel]'
                                    ,cus_fax='$_POST[cus_fax]'
                                    ,cus_email='" . htmlspecialchars($_POST['cus_email'], ENT_QUOTES) . "'
-                                   ,cus_address='" . htmlspecialchars($data['address'], ENT_QUOTES) . "'
+                                   ,cus_address='" . htmlspecialchars($_POST['cus_address_ex'], ENT_QUOTES) . "'
                                    ,cus_building='" . htmlspecialchars($_POST['cus_building'], ENT_QUOTES) . "'
                                    ,cus_room='$_POST[cus_room]'
                                    ,cus_floor='$_POST[cus_floor]'
@@ -264,8 +281,52 @@ class Model_Msalev extends CI_Model {
                                 LEFT JOIN(select cusl_id,cus_id from customer_log GROUP BY cus_id ORDER BY cusl_id ASC)tb4 on tb4.cus_id = tb1.cus_id
                                 LEFT JOIN(select * from customer_send_edit,user where customer_send_edit.emp_id = user.employee_id and customer_send_edit.cse_type = 0 and customer_send_edit.sce_type_send = 1 ORDER BY customer_send_edit.cse_id DESC limit 1)tb5 on tb5.cus_id = tb1.cus_id
                                 WHERE tb1.type_company IN('" . $this->session->userdata('Fixbu') . "') $data
-                and tb1.status = 1 ORDER BY tb1.cus_id DESC limit 100";
+                and tb1.status = 1 ORDER BY tb1.cus_id DESC";
         return $this->db->query($sql)->result();
+    }
+
+    public function query_customer_list2($prm) {
+        $keyword = !empty($prm['keyword']) ? "and tb1.cus_name LIKE '%" . $prm['keyword'] . "%' or tb1.cus_taxno LIKE '%" . $prm['keyword'] . "%' or tb1.cus_tower LIKE '%" . $prm['keyword'] . "%'" : "";
+        $limit = !empty($prm['start']) || !empty($prm['length']) ? "Limit " . $prm['start'] . "," . $prm['length'] : " limit 10";
+        $order_by = !empty($prm['column']) ? "ORDER BY " . $prm['column'] . " ".$prm['dir'] : "ORDER BY tb1.cus_id DESC";
+
+        $sql_count = "select * from customer where type_company IN('" . $this->session->userdata('Fixbu') . "') and status = 1";
+        $sql = "SELECT tb2.company_img AS tb2_company_img,
+                                   tb1.cus_edit AS tb1_cus_edit,
+                                   tb1.cus_name AS tb1_cus_name,
+                                   tb1.cus_tower AS tb1_cus_tower,
+                                   tb1.cus_taxno AS tb1_cus_taxno,
+                                   tb1.cus_ins AS tb1_cus_ins,
+                                   tb1.cus_code AS tb1_cus_code,
+                                   tb3.JOBMIW AS tb3_JOBMIW,
+                                   tb3.data_id AS tb3_data_id,
+                                   tb1.cus_check AS tb1_dcus_check,
+                                   tb1.cus_id AS tb1_cus_id,
+                                   tb4.cusl_id AS tb4_cusl_id,
+                                   CASE tb1.status_cus
+                                   WHEN  '0' THEN 'เจ้าหนี้'
+                                   WHEN  '1' THEN 'ลูกหนี้'
+                                   ELSE 'Unknown'
+                                   END AS tb1_status_cus
+                                from customer tb1 
+                                LEFT JOIN company_new tb2 on tb2.cid = tb1.type_company
+                                LEFT JOIN(select data_id,cus_id,JOBMIW from main_data GROUP BY cus_id ORDER BY cus_id DESC)tb3 on tb3.cus_id = tb1.cus_id
+                                LEFT JOIN(select cusl_id,cus_id from customer_log GROUP BY cus_id ORDER BY cusl_id ASC)tb4 on tb4.cus_id = tb1.cus_id
+                                WHERE tb1.type_company IN('" . $this->session->userdata('Fixbu') . "') $keyword and tb1.status = 1 $order_by $limit ";
+        $i = 0;
+        foreach ($this->db->query($sql)->result() as $result) {
+            $i++;
+            $data['result'][] = array(
+                ($prm['page'] * $prm['length']) + $i
+                    , $result->tb1_cus_code
+                , $result->tb1_cus_name
+                , $result->tb1_cus_tower
+                , $result->tb1_cus_taxno);
+        }
+
+        $data['row'] = $this->db->query($sql)->num_rows();
+        $data['row_condition'] = $this->db->query($sql_count)->num_rows();
+        return $data;
     }
 
     public function query_customer_edit_ok() {
@@ -394,8 +455,8 @@ class Model_Msalev extends CI_Model {
                                 LEFT JOIN typesale tb4 on tb4.typesale_id = tb1.typesale_id
                                 LEFT JOIN company_new tb5 on tb5.cid = tb1.cid
                                 LEFT JOIN (select COUNT(up_id) as tb6_up_id,up_data_id from upload_pdf group by up_data_id) tb6 on tb6.up_data_id = tb1.data_id
-                                LEFT JOIN (select MAX(ex_id) as tb8_m_exid,SUM(ex_total_amount) as tb7_ex_total_amount,SUM(ex_vat) as tb7_ex_vat,SUM(ex_amount) as tb7_sum_ex_amount,COUNT(ex_id) as tb7_count_ex_id,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_num,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name = 'ใบกำกับภาษี/ใบเสร็จรับเงิน' and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_jobmiw,ex_company ORDER BY ex_id DESC) tb7 on tb7.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
-                                LEFT JOIN (select MAX(ex_id) as tb8_m_exid,SUM(ex_total_amount) as tb8_ex_total_amount,SUM(ex_vat) as tb8_ex_vat,SUM(ex_amount) as tb8_sum_ex_amount,COUNT(ex_id) as tb8_count_ex_id,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_num,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name = 'ใบวางบิล' and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_jobmiw,ex_company ORDER BY ex_id DESC) tb8 on tb8.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
+                                LEFT JOIN (select MAX(ex_id) as tb8_m_exid,SUM(ex_total_amount) as tb7_ex_total_amount,SUM(ex_vat) as tb7_ex_vat,SUM(ex_amount) as tb7_sum_ex_amount,COUNT(ex_id) as tb7_count_ex_id,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_num,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name = 'ใบกำกับภาษี/ใบเสร็จรับเงิน' and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_main_code ORDER BY ex_id DESC) tb7 on tb7.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
+                                LEFT JOIN (select MAX(ex_id) as tb8_m_exid,SUM(ex_total_amount) as tb8_ex_total_amount,SUM(ex_vat) as tb8_ex_vat,SUM(ex_amount) as tb8_sum_ex_amount,COUNT(ex_id) as tb8_count_ex_id,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_num,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name = 'ใบวางบิล' and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_main_code ORDER BY ex_id DESC) tb8 on tb8.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
                                 LEFT JOIN (select COUNT(ls_data_id) as tb9_count_data_id,ls_data_id,ls_num from log_sent group by ls_data_id) tb9 on tb9.ls_data_id = tb1.data_id
                                 LEFT JOIN (select la_datetime,la_data_id,fname_thai,lname_thai from log_approve,user where log_approve.la_user = user.employee_id group by la_data_id) tb10 on tb10.la_data_id = tb1.data_id
                                 WHERE tb1.cid IN('" . $this->session->userdata('Fixbu') . "') and tb1.emp_company IN('" . $this->session->userdata('perrm_type_cid') . "') $data
@@ -403,7 +464,7 @@ class Model_Msalev extends CI_Model {
                                 ORDER BY tb2.data_id DESC";
         return $this->db->query($sql)->result();
     }
-    
+
     public function query_salevalue_close($data) {
         $sql = "select
                                 tb1.data_id as tb1_data_id,
@@ -723,6 +784,10 @@ class Model_Msalev extends CI_Model {
                tb2.user_sale as tb2_user_sale,
                tb2.date_finish as tb2_date_finish,
                tb2.discount as tb2_discount,
+               tb2.Sur_name as tb2_Sur_name,
+               tb2.other8 as tb2_other8,
+               tb2.Sur_per as tb2_Sur_per,
+               
                tb3.cus_id as tb3_cus_id,
                tb3.cus_name as tb3_cus_name,
                tb3.cus_taxno as tb3_cus_taxno,
@@ -775,12 +840,12 @@ class Model_Msalev extends CI_Model {
     }
 
     public function ins_maindata($data) {
-        $sql = "insert into `main_data`(`data_id`,`employee_id`,`emp_company`,`cid`,`typesale_id`,`typep_id`,`JOBMIW`,`JOBORDER`,`jobname`
+        $sql = "insert into `main_data`(`employee_id`,`emp_company`,`cid`,`typesale_id`,`typep_id`,`JOBMIW`,`JOBORDER`,`jobname`
             ,`cus_id`,`md_approved`,`st_export`,`setting_edit`,`emp_coordinator`,`miw_info`) VALUES
-            ('" . $data['data_id'] . "','" . $this->session->userdata('employee_id') . "','" . $this->session->userdata('company') . "','" . $this->session->userdata('bu') . "','$_POST[typesale_id]','$_POST[typep_id]','$_POST[JOBMIW]','$_POST[JOBORDER]','" . htmlspecialchars($_POST['jobname'], ENT_QUOTES) . "'
+            ('" . $this->session->userdata('employee_id') . "','" . $this->session->userdata('company') . "','" . $this->session->userdata('bu') . "','$_POST[typesale_id]','$_POST[typep_id]','$_POST[JOBMIW]','$_POST[JOBORDER]','" . htmlspecialchars($_POST['jobname'], ENT_QUOTES) . "'
              ,'$_POST[cus_id]','" . $data['status_md'] . "','" . $data['status_ex'] . "','" . $data['setting_edit'] . "','$_POST[emp_coordinator]','$_POST[miw_info]')";
         $this->db->query($sql);
-        return ($this->db->affected_rows() >= 1) ? true : false;
+        return $this->db->insert_id();
     }
 
     public function query_stock_show($pps_id) {
@@ -788,8 +853,8 @@ class Model_Msalev extends CI_Model {
         return $this->db->query($sql)->result_array();
     }
 
-    public function query_stocklog_show($pps_id, $cid, $jobmmiw) {
-        $sql = "select * from paper_stock_log where pps_id = '$pps_id' and pps_cid = '$cid' and ppsl_job = '$jobmmiw' and ppsl_detail_fix = '3' ";
+    public function query_stocklog_show($pps_id, $cid, $code) {
+        $sql = "select * from paper_stock_log where pps_id = '$pps_id' and pps_cid = '$cid' and main_code = '$code' and ppsl_detail_fix = '3' ";
         return $this->db->query($sql)->result_array();
     }
 
@@ -840,47 +905,47 @@ class Model_Msalev extends CI_Model {
                         ,com_paper_id7 = '$_POST[com_paper_id7]'
                         ,com_paper_id8 = '$_POST[com_paper_id8]'
                         ,com_paper_id9 = '$_POST[com_paper_id9]'
-                        ,pps_id1 = '" . $data['pps_id1'] . "'
+                        ,pps_id1 = " . $data['pps_id1'] . "
                         ,pps_num1 = '" . un_nfm($_POST['pps_num1']) . "'
                         ,ppt_id1 = '$_POST[ppt_id1]'
                         ,pps_cost1 = '" . un_nfm($_POST['pps_cost1']) . "'
                         ,am_paper1 = '" . un_nfm($_POST['am_paper1']) . "' 
-                        ,pps_id2 = '" . $data['pps_id2'] . "'
+                        ,pps_id2 = " . $data['pps_id2'] . "
                         ,pps_num2 = '" . un_nfm($_POST['pps_num2']) . "'
                         ,ppt_id2 = '$_POST[ppt_id2]'
                         ,pps_cost2 = '" . un_nfm($_POST['pps_cost2']) . "'
                         ,am_paper2 = '" . un_nfm($_POST['am_paper2']) . "'  
-                        ,pps_id3 = '" . $data['pps_id3'] . "'
+                        ,pps_id3 = " . $data['pps_id3'] . "
                         ,pps_num3 = '" . un_nfm($_POST['pps_num3']) . "'
                         ,ppt_id3 = '$_POST[ppt_id3]'
                         ,pps_cost3 = '" . un_nfm($_POST['pps_cost3']) . "'
                         ,am_paper3 = '" . un_nfm($_POST['am_paper3']) . "'
-                        ,pps_id4 = '" . $data['pps_id4'] . "'
+                        ,pps_id4 = " . $data['pps_id4'] . "
                         ,pps_num4 = '" . un_nfm($_POST['pps_num4']) . "'
                         ,ppt_id4 = '$_POST[ppt_id4]'
                         ,pps_cost4 = '" . un_nfm($_POST['pps_cost4']) . "'
                         ,am_paper4 = '" . un_nfm($_POST['am_paper4']) . "'
-                        ,pps_id5 = '" . $data['pps_id5'] . "'
+                        ,pps_id5 = " . $data['pps_id5'] . "
                         ,pps_num5 = '" . un_nfm($_POST['pps_num5']) . "'
                         ,ppt_id5 = '$_POST[ppt_id5]'
                         ,pps_cost5 = '" . un_nfm($_POST['pps_cost5']) . "'
                         ,am_paper5 = '" . un_nfm($_POST['am_paper5']) . "'
-                        ,pps_id6 = '" . $data['pps_id6'] . "'
+                        ,pps_id6 = " . $data['pps_id6'] . "
                         ,pps_num6 = '" . un_nfm($_POST['pps_num6']) . "'
                         ,ppt_id6 = '$_POST[ppt_id6]'
                         ,pps_cost6 = '" . un_nfm($_POST['pps_cost6']) . "'
                         ,am_paper6 = '" . un_nfm($_POST['am_paper6']) . "'
-                        ,pps_id7 = '" . $data['pps_id7'] . "'
+                        ,pps_id7 = " . $data['pps_id7'] . "
                         ,pps_num7 = '" . un_nfm($_POST['pps_num7']) . "'
                         ,ppt_id7 = '$_POST[ppt_id7]'
                         ,pps_cost7 = '" . un_nfm($_POST['pps_cost7']) . "'
                         ,am_paper7 = '" . un_nfm($_POST['am_paper7']) . "'
-                        ,pps_id8 = '" . $data['pps_id8'] . "'
+                        ,pps_id8 = " . $data['pps_id8'] . "
                         ,pps_num8 = '" . un_nfm($_POST['pps_num8']) . "'
                         ,ppt_id8 = '$_POST[ppt_id8]'
                         ,pps_cost8 = '" . un_nfm($_POST['pps_cost8']) . "'
                         ,am_paper8 = '" . un_nfm($_POST['am_paper8']) . "'
-                        ,pps_id9 = '" . $data['pps_id9'] . "'
+                        ,pps_id9 = " . $data['pps_id9'] . "
                         ,pps_num9 = '" . un_nfm($_POST['pps_num9']) . "'
                         ,ppt_id9 = '$_POST[ppt_id9]'
                         ,pps_cost9 = '" . un_nfm($_POST['pps_cost9']) . "'
@@ -995,37 +1060,37 @@ class Model_Msalev extends CI_Model {
                         ,ppt_id2 = '$_POST[ppt_id2]'
                         ,pps_cost2 = '" . un_nfm($_POST['pps_cost2']) . "'
                         ,am_paper2 = '" . un_nfm($_POST['am_paper2']) . "'  
-                        ,pps_id3 = '" . $data['pps_id3'] . "'
+                        ,pps_id3 = " . $data['pps_id3'] . "
                         ,pps_num3 = '" . un_nfm($_POST['pps_num3']) . "'
                         ,ppt_id3 = '$_POST[ppt_id3]'
                         ,pps_cost3 = '" . un_nfm($_POST['pps_cost3']) . "'
                         ,am_paper3 = '" . un_nfm($_POST['am_paper3']) . "'
-                        ,pps_id4 = '" . $data['pps_id4'] . "'
+                        ,pps_id4 = " . $data['pps_id4'] . "
                         ,pps_num4 = '" . un_nfm($_POST['pps_num4']) . "'
                         ,ppt_id4 = '$_POST[ppt_id4]'
                         ,pps_cost4 = '" . un_nfm($_POST['pps_cost4']) . "'
                         ,am_paper4 = '" . un_nfm($_POST['am_paper4']) . "'
-                        ,pps_id5 = '" . $data['pps_id5'] . "'
+                        ,pps_id5 = " . $data['pps_id5'] . "
                         ,pps_num5 = '" . un_nfm($_POST['pps_num5']) . "'
                         ,ppt_id5 = '$_POST[ppt_id5]'
                         ,pps_cost5 = '" . un_nfm($_POST['pps_cost5']) . "'
                         ,am_paper5 = '" . un_nfm($_POST['am_paper5']) . "'
-                        ,pps_id6 = '" . $data['pps_id6'] . "'
+                        ,pps_id6 = " . $data['pps_id6'] . "
                         ,pps_num6 = '" . un_nfm($_POST['pps_num6']) . "'
                         ,ppt_id6 = '$_POST[ppt_id6]'
                         ,pps_cost6 = '" . un_nfm($_POST['pps_cost6']) . "'
                         ,am_paper6 = '" . un_nfm($_POST['am_paper6']) . "'
-                        ,pps_id7 = '" . $data['pps_id7'] . "'
+                        ,pps_id7 = " . $data['pps_id7'] . "
                         ,pps_num7 = '" . un_nfm($_POST['pps_num7']) . "'
                         ,ppt_id7 = '$_POST[ppt_id7]'
                         ,pps_cost7 = '" . un_nfm($_POST['pps_cost7']) . "'
                         ,am_paper7 = '" . un_nfm($_POST['am_paper7']) . "'
-                        ,pps_id8 = '" . $data['pps_id8'] . "'
+                        ,pps_id8 = " . $data['pps_id8'] . "
                         ,pps_num8 = '" . un_nfm($_POST['pps_num8']) . "'
                         ,ppt_id8 = '$_POST[ppt_id8]'
                         ,pps_cost8 = '" . un_nfm($_POST['pps_cost8']) . "'
                         ,am_paper8 = '" . un_nfm($_POST['am_paper8']) . "'
-                        ,pps_id9 = '" . $data['pps_id9'] . "'
+                        ,pps_id9 = " . $data['pps_id9'] . "
                         ,pps_num9 = '" . un_nfm($_POST['pps_num9']) . "'
                         ,ppt_id9 = '$_POST[ppt_id9]'
                         ,pps_cost9 = '" . un_nfm($_POST['pps_cost9']) . "'
@@ -1100,12 +1165,11 @@ class Model_Msalev extends CI_Model {
         $this->db->query($sql);
     }
 
-    public function maindata_ins_stock($data, $id) {
+    public function maindata_ins_stock($data, $id, $code) {
         $this->load->helper('All');
-
         $sql = "insert into `paper_stock_log`(`main_code`,`pp_id_log`,`pps_id`,`pps_cid`, `ppsl_job`, `ppsl_jobname`
             , `ppc_id`, `psc_id`, `ppsl_num`, `ppsl_cost`, `ppsl_sum`, `ppt_id`, `ppsl_date`, `ppsl_status`, `ppsl_user`, `ppsl_detail`, `ppsl_detail_fix`) VALUES 
-                                ('" . $data['main_code'] . "','" . $data['pp_id'] . "','" . $data['pps_id'] . "','" . $data['pps_cid'] . "','$_POST[JOBMIW]','" . htmlspecialchars($_POST['jobname'], ENT_QUOTES) . "'
+                                ('" . $code . "','" . $data['pp_id'] . "','" . $data['pps_id'] . "','" . $data['pps_cid'] . "','$_POST[JOBMIW]','" . htmlspecialchars($_POST['jobname'], ENT_QUOTES) . "'
             ,'" . $data['ppc_id'] . "','2','" . un_nfm($_POST['pps_num' . $id]) . "','" . un_nfm($_POST['pps_cost' . $id]) . "','" . un_nfm($_POST['am_paper' . $id]) . "','" . $_POST['ppt_id' . $id] . "','" . date("Y-m-d", strtotime($_POST["date_job"])) . "','0','" . $this->session->userdata('employee_id') . "','รอการอนุมัติตัด STOCK',3)";
         $this->db->query($sql);
         return ($this->db->affected_rows() >= 1) ? true : false;
@@ -1113,7 +1177,7 @@ class Model_Msalev extends CI_Model {
 
     public function ins_maindatadetail($data) {
         $this->load->helper('All');
-        $sql = "insert into `main_data_detail`(`am_page`, `unit`, `p_unit`, `am_job`
+        $sql = "insert into `main_data_detail`(`data_id`,`am_page`, `unit`, `p_unit`, `am_job`
                         , `com_paper_id`, `com_paper_id2`, `com_paper_id3`, `com_paper_id4`, `com_paper_id5`, `com_paper_id6`
                         , `com_paper_id7`, `com_paper_id8`, `com_paper_id9`
                         , `pps_id1`, `pps_num1`, `ppt_id1`, `pps_cost1`, `am_paper1`
@@ -1143,18 +1207,18 @@ class Model_Msalev extends CI_Model {
                         , `d_othe`, `am_othe`, `p_unite`, `amounte`
                         , `profit_miw`, `comm_sw`,`discount`, `extra_discount`, `extra_discount_click`, `am_recieve`, `am_paid`, `total_amount`, `remark`, `user_sale`,
                          `date_job`,`date_finish`,`Surcharge_ex`) VALUES
-                ('" . un_nfm($_POST['am_page']) . "','" . un_nfm($_POST['unit']) . "','" . un_nfm($_POST['p_unit']) . "','" . un_nfm($_POST['am_job']) . "'
+                ('" . $_POST['data_id'] . "','" . un_nfm($_POST['am_page']) . "','" . un_nfm($_POST['unit']) . "','" . un_nfm($_POST['p_unit']) . "','" . un_nfm($_POST['am_job']) . "'
             ,'$_POST[com_paper_id]','$_POST[com_paper_id2]','$_POST[com_paper_id3]','$_POST[com_paper_id4]','$_POST[com_paper_id5]','$_POST[com_paper_id6]'
             ,'$_POST[com_paper_id7]','$_POST[com_paper_id8]','$_POST[com_paper_id9]'
-            ,'" . $data['pps_id1'] . "','" . un_nfm($_POST['pps_num1']) . "','$_POST[ppt_id1]','" . un_nfm($_POST['pps_cost1']) . "','" . un_nfm($_POST['am_paper1']) . "'
-            ,'" . $data['pps_id2'] . "','" . un_nfm($_POST['pps_num2']) . "','$_POST[ppt_id2]','" . un_nfm($_POST['pps_cost2']) . "','" . un_nfm($_POST['am_paper2']) . "'
-            ,'" . $data['pps_id3'] . "','" . un_nfm($_POST['pps_num3']) . "','$_POST[ppt_id3]','" . un_nfm($_POST['pps_cost3']) . "','" . un_nfm($_POST['am_paper3']) . "'
-            ,'" . $data['pps_id4'] . "','" . un_nfm($_POST['pps_num4']) . "','$_POST[ppt_id4]','" . un_nfm($_POST['pps_cost4']) . "','" . un_nfm($_POST['am_paper4']) . "'
-            ,'" . $data['pps_id5'] . "','" . un_nfm($_POST['pps_num5']) . "','$_POST[ppt_id5]','" . un_nfm($_POST['pps_cost5']) . "','" . un_nfm($_POST['am_paper5']) . "'
-            ,'" . $data['pps_id6'] . "','" . un_nfm($_POST['pps_num6']) . "','$_POST[ppt_id6]','" . un_nfm($_POST['pps_cost6']) . "','" . un_nfm($_POST['am_paper6']) . "'
-            ,'" . $data['pps_id7'] . "','" . un_nfm($_POST['pps_num7']) . "','$_POST[ppt_id7]','" . un_nfm($_POST['pps_cost7']) . "','" . un_nfm($_POST['am_paper7']) . "'
-            ,'" . $data['pps_id8'] . "','" . un_nfm($_POST['pps_num8']) . "','$_POST[ppt_id8]','" . un_nfm($_POST['pps_cost8']) . "','" . un_nfm($_POST['am_paper8']) . "'
-            ,'" . $data['pps_id9'] . "','" . un_nfm($_POST['pps_num9']) . "','$_POST[ppt_id9]','" . un_nfm($_POST['pps_cost9']) . "','" . un_nfm($_POST['am_paper9']) . "'
+            ," . $data['pps_id1'] . ",'" . un_nfm($_POST['pps_num1']) . "','$_POST[ppt_id1]','" . un_nfm($_POST['pps_cost1']) . "','" . un_nfm($_POST['am_paper1']) . "'
+            ," . $data['pps_id2'] . ",'" . un_nfm($_POST['pps_num2']) . "','$_POST[ppt_id2]','" . un_nfm($_POST['pps_cost2']) . "','" . un_nfm($_POST['am_paper2']) . "'
+            ," . $data['pps_id3'] . ",'" . un_nfm($_POST['pps_num3']) . "','$_POST[ppt_id3]','" . un_nfm($_POST['pps_cost3']) . "','" . un_nfm($_POST['am_paper3']) . "'
+            ," . $data['pps_id4'] . ",'" . un_nfm($_POST['pps_num4']) . "','$_POST[ppt_id4]','" . un_nfm($_POST['pps_cost4']) . "','" . un_nfm($_POST['am_paper4']) . "'
+            ," . $data['pps_id5'] . ",'" . un_nfm($_POST['pps_num5']) . "','$_POST[ppt_id5]','" . un_nfm($_POST['pps_cost5']) . "','" . un_nfm($_POST['am_paper5']) . "'
+            ," . $data['pps_id6'] . ",'" . un_nfm($_POST['pps_num6']) . "','$_POST[ppt_id6]','" . un_nfm($_POST['pps_cost6']) . "','" . un_nfm($_POST['am_paper6']) . "'
+            ," . $data['pps_id7'] . ",'" . un_nfm($_POST['pps_num7']) . "','$_POST[ppt_id7]','" . un_nfm($_POST['pps_cost7']) . "','" . un_nfm($_POST['am_paper7']) . "'
+            ," . $data['pps_id8'] . ",'" . un_nfm($_POST['pps_num8']) . "','$_POST[ppt_id8]','" . un_nfm($_POST['pps_cost8']) . "','" . un_nfm($_POST['am_paper8']) . "'
+            ," . $data['pps_id9'] . ",'" . un_nfm($_POST['pps_num9']) . "','$_POST[ppt_id9]','" . un_nfm($_POST['pps_cost9']) . "','" . un_nfm($_POST['am_paper9']) . "'
             ,'$_POST[compl_id]','$_POST[compl_id2]','$_POST[compl_id3]','$_POST[am_name_plate1]','" . un_nfm($_POST['am_plate1']) . "','$_POST[am_name_plate2]','" . un_nfm($_POST['am_plate2']) . "','$_POST[am_name_plate3]','" . un_nfm($_POST['am_plate3']) . "'
             ,'$_POST[cp_id]','$_POST[cp_id2]','$_POST[cp_id3]','$_POST[am_name_print1]','" . un_nfm($_POST['am_print1']) . "','$_POST[am_name_print2]','" . un_nfm($_POST['am_print2']) . "','$_POST[am_name_print3]','" . un_nfm($_POST['am_print3']) . "'
             ,'" . htmlspecialchars($_POST['d_oth1'], ENT_QUOTES) . "','" . un_nfm($_POST['am_oth1']) . "','" . un_nfm($_POST['p_unit1']) . "','" . un_nfm($_POST['amount1']) . "'
@@ -1176,10 +1240,11 @@ class Model_Msalev extends CI_Model {
             ,'" . date("Y-m-d", strtotime($_POST["date_job"])) . "','" . date("Y-m-d", strtotime($_POST["date_finish"])) . "','" . un_nfm($_POST['Surcharge_ex']) . "')";
 
         $this->db->query($sql);
-        return $this->db->insert_id();
+        return ($this->db->affected_rows() >= 1) ? true : false;
     }
 
     public function ins_maindata_log($data) {
+        $this->load->helper('All');
         $sql = "insert into main_data_log (`ml_name`, `ml_emp`, `ml_data_id`, `ml_emp_company`, `ml_cid`
                             , `ml_typesale_id`, `ml_typep_id`, `ml_JOBMIW`, `ml_JOBORDER`, `ml_jobname`, `ml_cus_id`
                             , `ml_statusjob`, `ml_md_approved`, `ml_st_export`, `ml_setting_bill`, `ml_setting_vat`
@@ -1214,15 +1279,15 @@ class Model_Msalev extends CI_Model {
                     ,'" . $data[0]['tb1_statusjob'] . "','" . $data[0]['tb1_md_approved'] . "','" . $data[0]['tb1_st_export'] . "','" . $data[0]['tb1_setting_bill'] . "','" . $data[0]['tb1_setting_vat'] . "'
                     ,'" . $data[0]['tb1_setting_edit'] . "','" . $data[0]['tb1_bp_ex'] . "','" . $data[0]['tb2_am_page'] . "','" . $data[0]['tb2_unit'] . "','" . $data[0]['tb2_p_unit'] . "','" . $data[0]['tb2_am_job'] . "'
                     ,'" . $data[0]['tb2_com_paper_id'] . "','" . $data[0]['tb2_com_paper_id2'] . "','" . $data[0]['tb2_com_paper_id3'] . "','" . $data[0]['tb2_com_paper_id4'] . "','" . $data[0]['tb2_com_paper_id5'] . "','" . $data[0]['tb2_com_paper_id6'] . "','" . $data[0]['tb2_com_paper_id7'] . "','" . $data[0]['tb2_com_paper_id8'] . "','" . $data[0]['tb2_com_paper_id9'] . "'
-                    ,'" . $data[0]['tb2_pps_id1'] . "','" . $data[0]['tb2_pps_num1'] . "','" . $data[0]['tb2_ppt_id1'] . "','" . $data[0]['tb2_pps_cost1'] . "'
-                    ,'" . $data[0]['tb2_pps_id2'] . "','" . $data[0]['tb2_pps_num2'] . "','" . $data[0]['tb2_ppt_id2'] . "','" . $data[0]['tb2_pps_cost2'] . "'
-                    ,'" . $data[0]['tb2_pps_id3'] . "','" . $data[0]['tb2_pps_num3'] . "','" . $data[0]['tb2_ppt_id3'] . "','" . $data[0]['tb2_pps_cost3'] . "'
-                    ,'" . $data[0]['tb2_pps_id4'] . "','" . $data[0]['tb2_pps_num4'] . "','" . $data[0]['tb2_ppt_id4'] . "','" . $data[0]['tb2_pps_cost4'] . "'
-                    ,'" . $data[0]['tb2_pps_id5'] . "','" . $data[0]['tb2_pps_num5'] . "','" . $data[0]['tb2_ppt_id5'] . "','" . $data[0]['tb2_pps_cost5'] . "'
-                    ,'" . $data[0]['tb2_pps_id6'] . "','" . $data[0]['tb2_pps_num6'] . "','" . $data[0]['tb2_ppt_id6'] . "','" . $data[0]['tb2_pps_cost6'] . "'
-                    ,'" . $data[0]['tb2_pps_id7'] . "','" . $data[0]['tb2_pps_num7'] . "','" . $data[0]['tb2_ppt_id7'] . "','" . $data[0]['tb2_pps_cost7'] . "'
-                    ,'" . $data[0]['tb2_pps_id8'] . "','" . $data[0]['tb2_pps_num8'] . "','" . $data[0]['tb2_ppt_id8'] . "','" . $data[0]['tb2_pps_cost8'] . "'
-                    ,'" . $data[0]['tb2_pps_id9'] . "','" . $data[0]['tb2_pps_num9'] . "','" . $data[0]['tb2_ppt_id9'] . "','" . $data[0]['tb2_pps_cost9'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id1']) . ",'" . $data[0]['tb2_pps_num1'] . "','" . $data[0]['tb2_ppt_id1'] . "','" . $data[0]['tb2_pps_cost1'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id2']) . ",'" . $data[0]['tb2_pps_num2'] . "','" . $data[0]['tb2_ppt_id2'] . "','" . $data[0]['tb2_pps_cost2'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id3']) . ",'" . $data[0]['tb2_pps_num3'] . "','" . $data[0]['tb2_ppt_id3'] . "','" . $data[0]['tb2_pps_cost3'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id4']) . ",'" . $data[0]['tb2_pps_num4'] . "','" . $data[0]['tb2_ppt_id4'] . "','" . $data[0]['tb2_pps_cost4'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id5']) . ",'" . $data[0]['tb2_pps_num5'] . "','" . $data[0]['tb2_ppt_id5'] . "','" . $data[0]['tb2_pps_cost5'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id6']) . ",'" . $data[0]['tb2_pps_num6'] . "','" . $data[0]['tb2_ppt_id6'] . "','" . $data[0]['tb2_pps_cost6'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id7']) . ",'" . $data[0]['tb2_pps_num7'] . "','" . $data[0]['tb2_ppt_id7'] . "','" . $data[0]['tb2_pps_cost7'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id8']) . ",'" . $data[0]['tb2_pps_num8'] . "','" . $data[0]['tb2_ppt_id8'] . "','" . $data[0]['tb2_pps_cost8'] . "'
+                    ," . datenull_edit($data[0]['tb2_pps_id9']) . ",'" . $data[0]['tb2_pps_num9'] . "','" . $data[0]['tb2_ppt_id9'] . "','" . $data[0]['tb2_pps_cost9'] . "'
                     ,'" . $data[0]['tb2_am_paper1'] . "','" . $data[0]['tb2_am_paper2'] . "','" . $data[0]['tb2_am_paper3'] . "','" . $data[0]['tb2_am_paper4'] . "','" . $data[0]['tb2_am_paper5'] . "','" . $data[0]['tb2_am_paper6'] . "','" . $data[0]['tb2_am_paper7'] . "','" . $data[0]['tb2_am_paper8'] . "','" . $data[0]['tb2_am_paper9'] . "'
                     ,'" . $data[0]['tb2_compl_id'] . "','" . $data[0]['tb2_compl_id2'] . "','" . $data[0]['tb2_compl_id3'] . "','" . $data[0]['tb2_am_name_plate1'] . "','" . $data[0]['tb2_am_plate1'] . "','" . $data[0]['tb2_am_name_plate2'] . "'
                     ,'" . $data[0]['tb2_am_plate2'] . "','" . $data[0]['tb2_am_name_plate3'] . "','" . $data[0]['tb2_am_plate3'] . "','" . $data[0]['tb2_cp_id'] . "','" . $data[0]['tb2_cp_id2'] . "','" . $data[0]['tb2_cp_id3'] . "'
@@ -1263,7 +1328,8 @@ class Model_Msalev extends CI_Model {
             tb2.fname_thai as tb2_fname_thai,
             tb2.lname_thai as tb2_lname_thai,
             CASE tb1.fizename 
-            WHEN null THEN 'ไม่มีชื่อ' 
+            WHEN null THEN 'ไม่มีชื่อ'
+            WHEN '' THEN 'ไม่มีชื่อ'
             ELSE tb1.fizename
             END as tb1_fizename 
                 from upload_pdf tb1
@@ -1337,12 +1403,18 @@ class Model_Msalev extends CI_Model {
         $this->db->query($sql);
         return ($this->db->affected_rows() >= 1) ? true : false; //return กลับไปด้วยว่าทำสำเร็จหรือไม่
     }
-    
-    public function query_bvo_update_dc($date,$id) {
+
+    public function query_bvo_update_dc($date, $id) {
         $this->load->helper('All');
         $sql = "update export_detail_test set ex_date_check = " . datenull_edit($date) . " where ex_id = '" . $id . "' ";
         $this->db->query($sql);
     }
+
+    public function query_maindata_success($id) {
+        $sql = "update main_data set statusjob = '1' where data_id = '" . $id . "' ";
+        $this->db->query($sql);
+    }
+
     public function query_bvo_show($id) {
 
         $sql = "select 
@@ -1500,7 +1572,7 @@ class Model_Msalev extends CI_Model {
             WHERE tb1.ex_name = '$data' 
             and tb1.ex_detail_ex = 1
             and tb1.ex_date_num BETWEEN '" . $this->session->userdata('date_start') . "' AND '" . $this->session->userdata('date_end') . "'
-            and tb1.ex_company IN('" . $this->session->userdata('perrm_cid') . "') ORDER BY tb1.ex_num DESC";
+            and tb1.ex_company IN('" . $this->session->userdata('Fixbu') . "') ORDER BY tb1.ex_num DESC";
         return $this->db->query($sql)->result();
     }
 
@@ -1680,9 +1752,14 @@ class Model_Msalev extends CI_Model {
 
     public function query_bv_list($name, $data) {
         $sql = "select
+            tb1.ex_jobmiw as tb1_ex_jobmiw,
+            tb1.ex_list as tb1_ex_list,
             tb1.ex_num_true as tb1_ex_num_true,
             tb1.ex_status as tb1_ex_status,
             tb1.ex_date_num as tb1_ex_date_num,
+            tb1.ex_date_check as tb1_ex_date_check,
+            tb1.ex_total_amount as tb1_ex_total_amount,
+            tb1.ex_amount_dff as tb1_ex_amount_dff,
             tb1.ex_amount as tb1_ex_amount,
             tb1.ex_vat as tb1_ex_vat,
             tb2.cus_name as tb2_cus_name,
@@ -1968,12 +2045,11 @@ class Model_Msalev extends CI_Model {
                     tb2.cus_id as tb2_cus_id,
                     tb2.cus_name as tb2_cus_name,
                     tb3.company_img as tb3_company_img,
-                    IFNULL(tb4.tb4_rc_id,0) as tb4_rc_id,
                     IFNULL(tb1.ex_jobmiw,tb1.ex_detail_other) as tb1_all_jobmiw
                     from export_detail_test tb1
                     LEFT JOIN customer tb2 on tb2.cus_id = tb1.ex_cus
                     LEFT JOIN company_new tb3 on tb3.cid = tb1.ex_company
-                    LEFT JOIN(select COUNT(rc_id) as tb4_rc_id,rc_company,rc_num_job,rc_id,ex_code from recieve_money GROUP BY rc_id) tb4 on tb4.rc_company = tb1.ex_company and tb4.rc_num_job LIKE CONCAT('%',tb1.ex_jobmiw,'%')
+                    LEFT JOIN(select rc_company,rc_num_job,rc_id,ex_code from recieve_money GROUP BY rc_id) tb4 on tb4.rc_company = tb1.ex_company and tb4.rc_num_job LIKE CONCAT('%',tb1.ex_jobmiw,'%')
                     WHERE tb1.ex_name IN('ใบวางบิล','ใบกำกับภาษี/ใบเสร็จรับเงิน') and tb1.ex_status = 1 and tb1.ex_detail_ex = 1
                     and tb1.ex_date_check BETWEEN '" . $data['dates'] . "' and '" . $data['datee'] . "' $cid and tb1.ex_date_check IS NOT NULL
                     and tb4.rc_id IS NULL
@@ -1982,20 +2058,87 @@ class Model_Msalev extends CI_Model {
     }
 
 //    SUM(case when tb1.jobname LIKE '%ออกแบบ%' or '%อาร์ตเวิร์ค%' then tb2.am_job else 0 end) as sum_am,
-    
-    
+
+
     public function query_list_vb($year, $month, $cid) {
         $sql = "SELECT
+                    tb1.ex_date_check as tb1_ex_date_check,
+                    tb1.ex_id as tb1_ex_id,
+                    tb1.ex_jobmiw as tb1_ex_jobmiw,
                     tb1.ex_total_amount as tb1_ex_total_amount,
-                    tb3.company_img as tb3_company_img
+                    tb1.ex_name as tb1_ex_name,
+                    tb1.ex_num_true as tb1_ex_num_true,
+                    tb2.cus_name as tb2_cus_name,
+                    tb2.cus_id as tb2_cus_id,
+                    tb3.company_img as tb3_company_img,
+                    tb4.rc_date_current as tb4_rc_date_current,
+                    tb4.rc_id as tb4_rc_id,
+                    IFNULL(tb4.tb4_rc_id,0) as tb4_rc_id,
+                    IFNULL(tb4.rc_amount,0) as tb4_rc_amount
                     from export_detail_test tb1
+                    LEFT JOIN customer tb2 on tb2.cus_id = tb1.ex_cus
                     LEFT JOIN company_new tb3 on tb3.cid = tb1.ex_company
+                    LEFT JOIN(select COUNT(rc_id) as tb4_rc_id,rc_amount,rc_company,rc_num_job,rc_id,rc_date_current from recieve_money GROUP BY rc_num_job,rc_company) tb4 on tb4.rc_company = tb1.ex_company and tb4.rc_num_job LIKE CONCAT('%',tb1.ex_jobmiw,'%')
                     WHERE tb1.ex_name IN('ใบวางบิล','ใบกำกับภาษี/ใบเสร็จรับเงิน') and tb1.ex_status = 1 and tb1.ex_detail_ex = 1
                     and YEAR(tb1.ex_date_check) = $year and MONTH(tb1.ex_date_check) = $month and tb1.ex_company = $cid and tb1.ex_date_check IS NOT NULL
                     ORDER BY tb1.ex_date_check ASC ";
         return $this->db->query($sql)->result();
     }
-    
+
+    public function query_list_rec($year, $month, $cid) {
+        $sql = "select
+            tb3.bank_name_th as tb3_bank_name_th,
+            tb3.bb_name_th as tb3_bb_name_th,
+            tb2.company_img as tb2_company_img,
+            tb1.rc_date_current as tb1_rc_date_current,
+            tb1.rc_date_re as tb1_rc_date_re,
+            tb1.rc_num_job as tb1_rc_num_job,
+            tb1.rc_company as tb1_rc_company,
+            tb1.rc_date_check as tb1_rc_date_check,
+            tb1.rc_num_check as tb1_rc_num_check,
+            tb1.rc_amount as tb1_rc_amount,
+            tb1.remark as tb1_remark,
+            tb1.rc_type as tb1_rc_type,
+            tb1.bb_id as tb1_bb_id,
+            tb1.rc_id as tb1_rc_id
+          from recieve_money tb1
+          LEFT JOIN company_new tb2 on tb2.cid = tb1.rc_company
+          LEFT JOIN bank_branch tb3 on tb3.bb_id = tb1.bb_id
+          LEFT JOIN(select * from export_detail_test where ex_name IN('ใบวางบิล','ใบกำกับภาษี/ใบเสร็จรับเงิน') and ex_status = 1 and ex_detail_ex = 1 GROUP BY ex_main_code)
+          tb4 on tb4.ex_code = tb1.ex_code 
+          WHERE YEAR(tb1.rc_date_current) = $year and MONTH(tb1.rc_date_current) = $month and tb1.rc_company = $cid and tb1.rc_date_current IS NOT NULL
+          ORDER BY tb1.rc_date_current ASC";
+
+        return $this->db->query($sql)->result();
+    }
+
+    public function query_list_rec_o($year, $month, $cid) {
+        $sql = "select
+            tb3.bank_name_th as tb3_bank_name_th,
+            tb3.bb_name_th as tb3_bb_name_th,
+            tb2.company_img as tb2_company_img,
+            tb1.rc_date_current as tb1_rc_date_current,
+            tb1.rc_date_re as tb1_rc_date_re,
+            tb1.rc_num_job as tb1_rc_num_job,
+            tb1.rc_company as tb1_rc_company,
+            tb1.rc_date_check as tb1_rc_date_check,
+            tb1.rc_num_check as tb1_rc_num_check,
+            tb1.rc_amount as tb1_rc_amount,
+            tb1.remark as tb1_remark,
+            tb1.rc_type as tb1_rc_type,
+            tb1.bb_id as tb1_bb_id,
+            tb1.rc_id as tb1_rc_id
+          from recieve_money tb1
+          LEFT JOIN company_new tb2 on tb2.cid = tb1.rc_company
+          LEFT JOIN bank_branch tb3 on tb3.bb_id = tb1.bb_id
+          LEFT JOIN (select * from export_detail_test where ex_name IN('ใบวางบิล','ใบกำกับภาษี/ใบเสร็จรับเงิน') and ex_status = 1 and ex_detail_ex = 1
+                    and YEAR(ex_date_check) = $year and MONTH(ex_date_check) = $month and ex_company = $cid and ex_date_check IS NOT NULL GROUP BY ex_jobmiw)tb4 on tb1.rc_company = tb4.ex_company and tb1.rc_num_job LIKE CONCAT('%',tb4.ex_jobmiw,'%')
+          WHERE YEAR(tb1.rc_date_current) = $year and MONTH(tb1.rc_date_current) = $month and tb1.rc_company = $cid and tb1.rc_date_current IS NOT NULL
+          ORDER BY tb1.rc_date_current ASC";
+
+        return $this->db->query($sql)->result();
+    }
+
     public function wid_recieve2($year, $month, $cid) {
         $sql = "SELECT
                     SUM(tb1.ex_total_amount) as tb1_ex_total_amount,
@@ -2007,8 +2150,7 @@ class Model_Msalev extends CI_Model {
                     ORDER BY tb1.ex_date_check ASC ";
         return $this->db->query($sql)->result_array();
     }
-    
-    
+
     public function wid_recieve3($year, $month, $cid) {
         $sql = "SELECT SUM(tb1.rc_amount) as tb1_rc_amount
                 from recieve_money tb1
@@ -2140,8 +2282,7 @@ class Model_Msalev extends CI_Model {
             where tb1.cid = '" . $this->uri->segment(4) . "' and tb1.setting_edit = 2 and tb5.slr_type = 3 ORDER BY tb5.slr_datetime DESC";
         return $this->db->query($sql)->result();
     }
-    
-    
+
     public function query_customer_a() {
         $sql = "SELECT 
             tb1.cus_id as tb1_cus_id
@@ -2159,75 +2300,73 @@ class Model_Msalev extends CI_Model {
             where tb1.type_company = '" . $this->uri->segment(4) . "' and tb1.cus_edit = 2 and tb2.slr_type = 1 ORDER BY tb2.slr_datetime DESC";
         return $this->db->query($sql)->result();
     }
-    
-    
-    public function query_vb_sumall($data,$other) {
+
+    public function query_vb_sumall($data, $other) {
         $sql = "select SUM(ex_vat) as sum_ex_vat,SUM(ex_amount) as sum_ex_amount
             from export_detail_test where  
             ex_name IN('ใบกำกับภาษี/ใบเสร็จรับเงิน','บิลเงินสด')
-            and ex_company = '".$data['cid']."'
+            and ex_company = '" . $data['cid'] . "'
             and ex_detail_ex  = 1
-            and ex_status = 1 and MONTH(ex_date_num) = '".$data['month']."' and YEAR(ex_date_num) = '".$data['year']."' $other ";
+            and ex_status = 1 and MONTH(ex_date_num) = '" . $data['month'] . "' and YEAR(ex_date_num) = '" . $data['year'] . "' $other ";
         return $this->db->query($sql)->result_array();
     }
-    
-    public function query_vbd_sumall($data,$other) {
+
+    public function query_vbd_sumall($data, $other) {
         $sql = "select SUM(ex_amount_dff) as total,SUM(ex_vat) as total_ex_vat from export_detail_test where  
             ex_name IN('ใบลดหนี้')
-            and ex_company = '".$data['cid']."'
+            and ex_company = '" . $data['cid'] . "'
             and ex_detail_ex  = 1
-            and ex_status = 1 and MONTH(ex_date_num) = '".$data['month']."' and YEAR(ex_date_num) = '".$data['year']."' $other ";
+            and ex_status = 1 and MONTH(ex_date_num) = '" . $data['month'] . "' and YEAR(ex_date_num) = '" . $data['year'] . "' $other ";
         return $this->db->query($sql)->result_array();
     }
-    
-    public function query_vbd_vatbuy($data,$id) {
-        $sql = "SELECT SUM(amount) as sum_amount,SUM(vat7) as sum_vat7 FROM tb_vatbuy WHERE bid = '".$data['cid']."' AND report_month = '".$data['month']."' AND report_year = '".$data['year']."' AND report_status = 1 and typevat = $id";
+
+    public function query_vbd_vatbuy($data, $id) {
+        $sql = "SELECT SUM(amount) as sum_amount,SUM(vat7) as sum_vat7 FROM tb_vatbuy WHERE bid = '" . $data['cid'] . "' AND report_month = '" . $data['month'] . "' AND report_year = '" . $data['year'] . "' AND report_status = 1 and typevat = $id";
         return $this->db->query($sql)->result_array();
     }
-    
-    public function query_pp30_oldm($data,$m,$y) {
+
+    public function query_pp30_oldm($data, $m, $y) {
         $sql = "select * from sv_vat7_30 where  
-                            svv_cid = '".$data['cid']."'
-                            and svv_status = 1 and MONTH(svv_date) = '".$m."' and YEAR(svv_date) = '".$y."' ";
+                            svv_cid = '" . $data['cid'] . "'
+                            and svv_status = 1 and MONTH(svv_date) = '" . $m . "' and YEAR(svv_date) = '" . $y . "' ";
         return $this->db->query($sql)->result_array();
     }
-    
+
     public function query_vatbuy_frun($data) {
-        $sql = "SELECT * FROM tb_vatbuy WHERE bid = '".$data['cid']."'  AND report_month is null AND report_year is null AND YEAR(new_datevat) BETWEEN '".$data['year']."' AND '" . ($data['year'] - 1) . "' ORDER BY new_datevat,no_vat ASC ";
+        $sql = "SELECT * FROM tb_vatbuy WHERE bid = '" . $data['cid'] . "'  AND report_month is null AND report_year is null AND YEAR(new_datevat) BETWEEN '" . $data['year'] . "' AND '" . ($data['year'] - 1) . "' ORDER BY new_datevat,no_vat ASC ";
         return $this->db->query($sql)->result();
     }
-    
-    public function query_vatbuy_frun_update($id,$arr) {
+
+    public function query_vatbuy_frun_update($id, $arr) {
         $sql = "UPDATE tb_vatbuy SET report_year = '" . $arr . "' WHERE id = '" . $id . "' ";
-         $this->db->query($sql);
-    }
-    
-    public function query_pp30_update() {
-        $sql = "UPDATE `sv_vat7_30` SET `svv_status`= 0 WHERE svv_cid='".$_POST['c']."' and MONTH(svv_date) = '".$_POST['m']."' and YEAR(svv_date) ='".$_POST['y']."' and svv_status = '1' ";
         $this->db->query($sql);
     }
-    
+
+    public function query_pp30_update() {
+        $sql = "UPDATE `sv_vat7_30` SET `svv_status`= 0 WHERE svv_cid='" . $_POST['c'] . "' and MONTH(svv_date) = '" . $_POST['m'] . "' and YEAR(svv_date) ='" . $_POST['y'] . "' and svv_status = '1' ";
+        $this->db->query($sql);
+    }
+
     public function query_pp30_delete($id) {
-        $sql = "UPDATE `sv_vat7_30` SET `svv_status`= 0 WHERE svv_id='".$id."'";
+        $sql = "UPDATE `sv_vat7_30` SET `svv_status`= 0 WHERE svv_id='" . $id . "'";
         $this->db->query($sql);
         return ($this->db->affected_rows() >= 1) ? true : false;
     }
-    
+
     public function query_pp30_ins() {
         $this->load->helper('All');
         $sql = "insert into sv_vat7_30 (`svv_emp`, `svv_date`, `svv_cid`, `svv_1_1`, `svv_1_2`, `svv_2`
                         , `svv_3`, `svv_4`, `svv_5`, `svv_6_1`, `svv_6_2`, `svv_7`
                         , `svv_8`, `svv_9`, `svv_10`, `svv_11`, `svv_12`, `svv_13`
                         , `svv_14`, `svv_15`, `svv_16`) 
-                        values('" . $this->session->userdata('employee_id') . "','" . $_POST['y'] . "-" . $_POST['m'] . "-01" . "','" . $_POST['c']."','" . un_nfm($_POST['svv_1_1'])."','" . un_nfm($_POST['svv_1_2'])."','" . un_nfm($_POST['svv_2'])."'
-                        ,'" . un_nfm($_POST['svv_3'])."','" . un_nfm($_POST['svv_4'])."','" . un_nfm($_POST['svv_5'])."','" . un_nfm($_POST['svv_6_1'])."','" . un_nfm($_POST['svv_6_2'])."','" . un_nfm($_POST['svv_7'])."'
-                        ,'" . un_nfm($_POST['svv_8'])."','" . un_nfm($_POST['svv_9'])."','" . un_nfm($_POST['svv_10'])."','" . un_nfm($_POST['svv_11'])."','" . un_nfm($_POST['svv_12'])."','" . un_nfm($_POST['svv_13'])."'
-                ,'" . un_nfm($_POST['svv_14'])."','" . un_nfm($_POST['svv_15'])."','" . un_nfm($_POST['svv_16'])."')";
+                        values('" . $this->session->userdata('employee_id') . "','" . $_POST['y'] . "-" . $_POST['m'] . "-01" . "','" . $_POST['c'] . "','" . un_nfm($_POST['svv_1_1']) . "','" . un_nfm($_POST['svv_1_2']) . "','" . un_nfm($_POST['svv_2']) . "'
+                        ,'" . un_nfm($_POST['svv_3']) . "','" . un_nfm($_POST['svv_4']) . "','" . un_nfm($_POST['svv_5']) . "','" . un_nfm($_POST['svv_6_1']) . "','" . un_nfm($_POST['svv_6_2']) . "','" . un_nfm($_POST['svv_7']) . "'
+                        ,'" . un_nfm($_POST['svv_8']) . "','" . un_nfm($_POST['svv_9']) . "','" . un_nfm($_POST['svv_10']) . "','" . un_nfm($_POST['svv_11']) . "','" . un_nfm($_POST['svv_12']) . "','" . un_nfm($_POST['svv_13']) . "'
+                ,'" . un_nfm($_POST['svv_14']) . "','" . un_nfm($_POST['svv_15']) . "','" . un_nfm($_POST['svv_16']) . "')";
         $this->db->query($sql);
         return ($this->db->affected_rows() >= 1) ? true : false;
     }
-    
-    
+
     public function query_pp30_list() {
         $sql = "SELECT 
             tb1.svv_1_1 as tb1_svv_1_1
@@ -2249,9 +2388,8 @@ class Model_Msalev extends CI_Model {
           WHERE svv_cid IN('" . $this->session->userdata('Fixbu') . "') and svv_status = 1";
         return $this->db->query($sql)->result();
     }
-    
-    
-     public function query_pp30_show($id) {
+
+    public function query_pp30_show($id) {
         $sql = "SELECT 
             tb1.svv_1_1 as tb1_svv_1_1
             ,tb1.svv_1_2 as tb1_svv_1_2
@@ -2280,8 +2418,7 @@ class Model_Msalev extends CI_Model {
           WHERE svv_id ='" . $id . "'";
         return $this->db->query($sql)->result_array();
     }
-    
-    
+
     public function query_order_a() {
         $sql = "SELECT 
             tb1.ppo_job as tb1_ppo_job
@@ -2307,8 +2444,7 @@ class Model_Msalev extends CI_Model {
             where tb1.ppo_cid = '" . $this->uri->segment(4) . "' and tb1.ppo_edit = 2 and tb2.slr_type = 2 ORDER BY tb2.slr_datetime DESC";
         return $this->db->query($sql)->result();
     }
-    
-    
+
     public function query_query_search($text) {
         $sql = "SELECT 
             tb1.data_id as tb1_data_id,
@@ -2329,12 +2465,54 @@ class Model_Msalev extends CI_Model {
           INNER JOIN customer tb3 on tb3.cus_id = tb1.cus_id
           INNER JOIN company_new tb4 on tb4.cid = tb1.cid
           INNER JOIN typesale tb5 on tb5.typesale_id = tb1.typesale_id
-          WHERE tb1.JOBMIW LIKE '%$text%' or tb1.jobname LIKE '%$text%' and tb1.cid IN('" . $this->session->userdata('perrm_cid') . "') and tb1.statusjob != 2 ";
+          WHERE tb1.JOBMIW LIKE '%" . $text . "%' or tb1.jobname LIKE '%" . $text . "%' and tb1.cid IN('" . $this->session->userdata('perrm_cid') . "') and tb1.statusjob != 2  order by tb1.data_id DESC LIMIT 50";
         return $this->db->query($sql)->result();
     }
-    
-    
 
+    public function query_vatbuy_list_show($id) {
 
+        $sql = "select
+            tb1.id as tb1_id,
+            tb1.ppo_id as tb1_ppo_id,
+            tb1.no_vat as tb1_no_vat,
+            tb1.ppo_job as tb1_ppo_job,
+            tb1.ppo_cid as tb1_ppo_cid,
+            tb1.amount as tb1_amount,
+            tb1.vat7 as tb1_vat7,
+            tb1.typevat as tb1_typevat,
+            tb1.new_datevat as tb1_new_datevat,
+            tb1.ppo_waitpay as tb1_ppo_waitpay,
+            tb2.company_name as tb2_company_name,
+            tb2.company_img as tb2_company_img,
+            tb4.cus_name as tb4_cus_name,
+            tb4.cus_tower as tb4_cus_tower,
+            tb4.cus_taxno as tb4_cus_taxno,
+            tb4.cus_id as tb4_cus_id,
+            CASE tb1.ppo_waitpay
+                WHEN '0' THEN 'ยังไม่จ่าย' 
+                WHEN '1' THEN 'จ่ายแล้ว' 
+                ELSE ''
+                END AS tb1_color_ppo_waitpay,
+            CASE tb1.typevat
+                WHEN '0' THEN 'ใบกำกับภาษี' 
+                WHEN '1' THEN 'ใบลดหนี้' 
+                ELSE ''
+                END AS tb1_typevat_name,
+            CASE tb1.typevat
+                WHEN '0' THEN '+' 
+                WHEN '1' THEN '-' 
+                ELSE ''
+                END AS tb1_typevatp
+            from tb_vatbuy tb1
+            LEFT JOIN company_new tb2 on tb2.cid = tb1.bid
+            LEFT JOIN customer tb4 on tb4.cus_id = tb1.cus_id
+            WHERE tb1.ppo_id ='$id'";
+        return $this->db->query($sql)->result();
+    }
+
+    public function query_vatbuy_update($novat, $ppo_job, $ppo_id, $ppo_cid) {
+        $sql = "UPDATE `tb_vatbuy` SET `ppo_id`= '$ppo_id',`ppo_job`= '$ppo_job',`ppo_cid`= '$ppo_cid' WHERE remake='$novat' and typevat = 1 and ppo_id IS NULL";
+        $this->db->query($sql);
+    }
 
 }

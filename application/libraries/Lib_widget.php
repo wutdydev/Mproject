@@ -13,12 +13,38 @@ class Lib_widget {
         $dataj['base'] = base_url("Salev/"); //เอาไว้ใช้ alert
         
         if ($this->CI->uri->segment(3) == 'VR' and ! empty($this->CI->uri->segment(4)) and ! empty($this->CI->uri->segment(5))) {
-
+            $resultc = $this->CI->Model_Msalev->query_company_show($this->CI->uri->segment(4));
+            
             $data['name'] = "รายการนัดรับเช็ค";
-            $data['title_name'] = "รายการนัดรับเช็ค";
-            $data['file'] = "search";
-            $data['footer'] = "f_search";
+            $data['tt_name'] = "รายการนัดรับเช็ค ".$resultc[0]['company_name']." เดือน ".  str_month($this->CI->uri->segment(5))." ปี ".  date("Y");
+            $data['file'] = "vr_list";
+            $data['footer'] = "f_bank_list";
             $data['query'] = $this->CI->Model_Msalev->query_list_vb(date("Y"),$this->CI->uri->segment(5),$this->CI->uri->segment(4)); // ปี-เดือน-บริษัท
+            $data['queryrc'] = $this->CI->Model_Msalev->query_list_rec(date("Y"),$this->CI->uri->segment(5),$this->CI->uri->segment(4)); // ปี-เดือน-บริษัท
+            $data['queryo'] = $this->CI->Model_Msalev->query_list_rec_o(date("Y"),$this->CI->uri->segment(5),$this->CI->uri->segment(4)); // ปี-เดือน-บริษัท
+            
+            $i = 0;
+            $k = 0;
+            $data['sum'] = 0;
+            $data['sumr'] = 0;
+            $data['sum_rc'] = 0;
+            $data['count_rc'] = 0;
+            foreach ($data['query'] as $res){
+                $i++;
+                $data['sum'] += $res->tb1_ex_total_amount;
+                $data['sum_rc'] += $res->tb4_rc_amount;
+                if(!empty($res->tb4_rc_id)){
+                    $data['count_rc'] += 1;
+                }
+            }
+            $data['count'] = $i;
+            
+            
+            foreach ($data['queryo'] as $resc){
+                $k++;
+                $data['sumr'] += $resc->tb1_rc_amount;
+            }
+            $data['countr'] = $k;
             
         }else {
             $dataj['name'] = "รูปแบบ URL ไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง";
@@ -131,8 +157,10 @@ class Lib_widget {
 
                 $onclick1 = 'onclick="window.open(\'' . base_url('Salev/Maindata/EDIT') . '/' . $res->tb1_data_id . '\')"';
                 $onclick2 = 'onclick="window.open(\'' . base_url('Salev/Status/View') . '/' . $res->tb1_data_id . '\')"';
-
-
+                if ($this->CI->session->userdata('type') == 1 or $this->CI->session->userdata('type') == 7 or $this->CI->session->userdata('type') == 5) {
+                $onclick3 = 'href="' . base_url('Salev/Maindata/Success') . '/' . $res->tb1_data_id .'"';
+                $button3 = "<button type='button' class='btn btn-outline btn-success btn-sm confirmation' $onclick3>&nbsp;<i class='fa fa-check'></i>&nbsp;</button>";
+                }
                 if ($res->tb1_typesale_id == 'T0001') {
                     $data['all_cd'] += 1;
                     $data['all_sd'] += $res->tb2_am_recieve;
@@ -158,8 +186,10 @@ class Lib_widget {
                     <td align = 'right'>" . recieve_cc($res->tb9_sum_amount, $res->tb2_am_recieve, $res->tb9_count_rc_ic) . "</td>
                     <td align = 'center'>" . datespacing_cc($data['daten'], $res->tb6_ls_date) . " </td>
            <td>
+           
             <button type='button' class='btn btn-outline btn-default btn-sm' $onclick1> &nbsp;<i class='fa fa-search'></i>&nbsp;</button> 
             <button type='button' class='btn btn-outline btn-warning btn-sm' $onclick2>&nbsp;<i class='fa fa-snapchat'></i>&nbsp;</button>
+            $button3
            </td>
            </tr>";
 

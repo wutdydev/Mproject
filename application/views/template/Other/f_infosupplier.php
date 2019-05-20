@@ -1,12 +1,69 @@
 <script src="<?php echo base_url() ?>assets/js/jquery-ui.js" type="text/javascript"></script>
-<script>
-        $(document).ready(function () {
-            $('#dataTables-example').DataTable({
-                "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
-            });
-        });
-</script>
+<script type="text/javascript" src="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.js"></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $('#dataTables-example').DataTable({
+            "lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]]
+        });
+    });
+    $('.confirmation').confirm({
+        animation: 'left',
+        closeAnimation: 'left',
+        animateFromElement: false,
+        icon: 'glyphicon glyphicon-exclamation-sign',
+        content: 'ระบจะกู้คืนข้อมูล Supplier ที่เลือก',
+        title: 'ต้องการใช้งานใช่หรือไม่',
+        autoClose: 'cancel|6000',
+        type: 'green',
+        confirmButtonColor: "#DD6B55",
+        buttons: {
+            confirm: {
+                text: 'ต้องการ',
+                btnClass: 'btn-green',
+                keys: ['Enter', 'y'],
+                action: function () {
+                    location.href = this.$target.attr('href');
+                }
+            },
+            cancel: {
+                text: 'ยกเลิก',
+                btnClass: 'btn-default',
+                keys: ['ESC', 'n'],
+                action: function () {
+                }
+            },
+        }
+    });
+
+    $('.confirmation2').confirm({
+        animation: 'left',
+        closeAnimation: 'left',
+        animateFromElement: false,
+        icon: 'glyphicon glyphicon-exclamation-sign',
+        content: 'ระบบจะทำการยกเลิก Supplier ที่เลือก',
+        title: 'ต้องการยกเลิกข้อมูลหรือไม่',
+        autoClose: 'cancel|6000',
+        type: 'red',
+        confirmButtonColor: "#DD6B55",
+        buttons: {
+            confirm: {
+                text: 'ลบข้อมูล',
+                btnClass: 'btn-danger',
+                keys: ['Enter', 'y'],
+                action: function () {
+                    location.href = this.$target.attr('href');
+                }
+            },
+            cancel: {
+                text: 'ยกเลิก',
+                btnClass: 'btn-default',
+                keys: ['ESC', 'n'],
+                action: function () {
+                }
+            },
+        }
+    });
+
     $(function () {
 
         var obj_check = $(".css-require");

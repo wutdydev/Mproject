@@ -11,6 +11,17 @@ class Link extends CI_Controller {
     function index() {
         
     }
+    
+    public function Status() {
+        $this->load->helper('All'); //เปลี่ยนสีของ form
+        $this->load->library('Lib_salev');
+        
+        $rec_array = $this->lib_salev->view();
+        $this->load->view('template/header', array('title' => $rec_array['name']));
+        $this->load->view('Msalev/' . $rec_array['file'], $rec_array); //ถ้ายังไม่ได้ Submit ใหเด้งไปที่หน้ากรอกข้อมูล/แก้ไข
+        $this->load->view('template/footer');
+        $this->load->view('template/Other/' . $rec_array['footer']); //js / css other
+    }
 
     public function View() {
         $this->load->helper('All'); //เปลี่ยนสีของ form

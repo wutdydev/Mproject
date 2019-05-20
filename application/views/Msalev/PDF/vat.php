@@ -176,7 +176,7 @@
                             </tr>
                             <tr>
                                 <td align="right" COLSPAN = "3" style="border-right: solid 1px #000;font-size: 1.2rem;">&nbsp;จำนวนภาษีมูลค่าเพิ่ม/VAT</td>
-                                <td style="border-bottom: solid 1px #000;font-size: 1.2rem;" align="right"><?php echo rep_number($vat7, 2) ?></td>
+                                <td style="border-bottom: solid 1px #000;font-size: 1.2rem;" align="right"><?php echo rep_number0($vat7, 2) ?></td>
                             </tr>
 
                             <tr>
@@ -279,16 +279,16 @@
 
             if ($cid == '3') {
                 ?>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 80px; right: 30px;font-size: 2.2rem;"><?php echo $novat ?></div>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 115px; right: 30px;font-size: 1.5rem;"><?php echo conv_date($date_bvr) ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 90px; right: 40px;font-size: 2.2rem;"><?php echo $novat ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 125px; right: 40px;font-size: 1.5rem;"><?php echo conv_date($date_bvr) ?></div>
             <?php } else if ($cid == '5') {
                 ?>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 105px; left: 600px;font-size: 2.2rem;"><?php echo $novat ?></div>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 135px; left: 600px;font-size: 1.5rem;"><?php echo conv_date($date_bvr) ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 115px; left: 600px;font-size: 2.2rem;"><?php echo $novat ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 145px; left: 600px;font-size: 1.5rem;"><?php echo conv_date($date_bvr) ?></div>
             <?php } else {
                 ?>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 15px; right: 15px;font-size: 2.2rem;"><?php echo $novat ?></div>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 50px; right: 15px;font-size: 1.5rem;"><?php echo conv_date($date_bvr) ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 25px; right: 25px;font-size: 2.2rem;"><?php echo $novat ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 60px; right: 25px;font-size: 1.5rem;"><?php echo conv_date($date_bvr) ?></div>
                 <?php
             }
             ?>  
@@ -466,7 +466,7 @@
                 </div> 
 
                 <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 195px; left: 100px;font-size: 1.3rem;"><?php echo rep_number($am_recieve, 2); ?></div>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 195px; left: 390px;font-size: 1.3rem;"><?php echo number_format($vat7, 2); ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 195px; left: 390px;font-size: 1.3rem;"><?php echo rep_number0($vat7, 2); ?></div>
 
 
                 <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 295px; right: 55px;font-size: 1.3rem;"><?php echo rep_number($total_vat, 2); ?></div>
@@ -484,62 +484,62 @@
             } else {
                 ?>
 
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 180px; left: 80px;font-size: 1.2rem;"><?php echo $cus_name; ?> <?php echo $cus_tower; ?></div>  
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 205px; left: 80px;font-size: 1.1rem;"><?php echo htmlspecialchars_decode($cus_address); ?></div> 
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 225px; left: 80px;font-size: 1.2rem;">เลขประจำตัวผู้เสียภาษี <?php echo $cus_taxno; ?></div>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 225px; right: 20px;font-size: 1.2rem;"><?php echo $JOBMIW_SHOW ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 190px; left: 80px;font-size: 1.2rem;"><?php echo $cus_name; ?> <?php echo $cus_tower; ?></div>  
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 215px; left: 80px;font-size: 1.1rem;"><?php echo htmlspecialchars_decode($cus_address); ?></div> 
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 235px; left: 80px;font-size: 1.2rem;">เลขประจำตัวผู้เสียภาษี <?php echo $cus_taxno; ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 235px; right: 20px;font-size: 1.2rem;"><?php echo $JOBMIW_SHOW ?></div>
 
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 270px; left: 25px; right: 10px;">
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;top: 260px; left: 25px; right: 10px;">
                     <table  class="table table-hover" width="100%" cellspacing="0" border="0" Cellpadding = "5" >
                         <thead>
                             <tr > 
-                                <th width ="8%" >&nbsp;<br> &nbsp;</th>
-                                <th width ="50%" >&nbsp;<br> &nbsp;</th>
-                                <th width ="15%" >&nbsp;<br> &nbsp;</th>
-                                <th width ="15%" >&nbsp;<br> &nbsp;</th>
-                                <th width ="15%">&nbsp; <br> &nbsp;</th>
+                                <th width ="5%" >&nbsp;<br> &nbsp;</th>
+                                <th width ="56%" >&nbsp;<br> &nbsp;</th>
+                                <th width ="12%" >&nbsp;<br> &nbsp;</th>
+                                <th width ="13%" >&nbsp;<br> &nbsp;</th>
+                                <th width ="14%">&nbsp; <br> &nbsp;</th>
                             </tr>
                         </thead>
 
                         <tbody>  
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list1; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list1; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit1, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost1, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total1, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list2; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list2; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit2, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost2, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total2, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list3; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list3; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit3, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost3, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total3, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list4; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list4; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit4, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost4, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total4, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list5; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list5; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit5, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost5, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total5, 2) ?></td>
@@ -547,56 +547,56 @@
 
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list6; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list6; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit6, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost6, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total6, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo replace_detail_o($ex_list7); ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo replace_detail_o($ex_list7); ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit7, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost7, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total7, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list8; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list8; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit8, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost8, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total8, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list9; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list9; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit9, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost9, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total9, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list10; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list10; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit10, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost10, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total10, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list11; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list11; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit11, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost11, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total11, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list12; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list12; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit12, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost12, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total12, 2) ?></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="font-size: 1.3rem;"><?php echo $ex_list13; ?></td>
+                                <td style="font-size: 1.2rem;"><?php echo $ex_list13; ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_unit13, 2) ?></td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_cost13, 3) ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td align="right" style="font-size: 1.3rem;"><?php echo rep_number($ex_total13, 2) ?></td>
@@ -611,7 +611,7 @@
 
                 </div> 
                 <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 380px; right: 15px;font-size: 1.3rem;"><?php echo rep_number($am_recieve, 2); ?></div>
-                <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 350px; right: 15px;font-size: 1.3rem;"><?php echo rep_number($vat7, 2); ?></div>
+                <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 350px; right: 15px;font-size: 1.3rem;"><?php echo rep_number0($vat7, 2); ?></div>
                 <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 320px; right: 15px;font-size: 1.3rem;"><?php echo rep_number($total_vat, 2); ?></div>
                 <div style="A_CSS_ATTRIBUTE:all;position: absolute;bottom: 280px; left: 150px;font-size: 1.3rem;"> --<?php echo convert_thai(rep_number($total_vat, 2)); ?>-- </div>
 

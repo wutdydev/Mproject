@@ -34,14 +34,14 @@
                                         <td width="7%">
                                             <div class="form-group">
                                                 <input class="form-control css-require" type="date" name="date_start" id="date_start">
-                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="form-control-feedback" aria-hidden="true"></span>
                                             </div>
                                         </td>
 
                                         <td width="7%">
                                             <div class="form-group">
                                                 <input class="form-control css-require" type="date" name="date_end" id="date_end">
-                                                <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                                                <span class="form-control-feedback" aria-hidden="true"></span>
                                             </div>
                                         </td>
 

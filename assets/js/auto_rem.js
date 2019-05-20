@@ -6,49 +6,52 @@ $(document).ready(function () {
             $("#bb_id").val(ui.item.desc1);
             $("#bank_name").val(ui.item.desc2);
             $("#bank_branch").val(ui.item.desc3);
-            
+
         }
     }).data("ui-autocomplete")._renderItem = function (ul, item) {
-        var inner_html = '<div>' + item.label + ' '+ item.desc2 +' '+ item.desc3 +'</div>';
+        var inner_html = '<div>' + item.label + ' ' + item.desc2 + ' ' + item.desc3 + '</div>';
         return $("<li></li>")
                 .data("item.autocomplete", item)
                 .append(inner_html)
                 .appendTo(ul);
 
     };
-});
 
-
-$(document).ready(function () {
-    $("#num_job").autocomplete({
+    $("input[name='num_job']").autocomplete({
         source: BASE_URL + 'Autocomplete/auto_vat', // name of controller followed by function
         select: function (event, ui) {
-            $("#rc_main_code").val(ui.item.desc1);
+
+            if ($(".padd").length >= 1) {
+                $("#rc_num_job").val($("#rc_num_job").val() + "," + ui.item.desc3);
+                $("#ex_code").val($("#ex_code").val() + "," + ui.item.desc6);
+                $("#rc_main_code").val($("#rc_main_code").val() + "," + ui.item.desc1);
+            } else {
+                $("#rc_num_job").val(ui.item.desc3);
+                $("#ex_code").val(ui.item.desc6);
+                $("#rc_main_code").val(ui.item.desc1);
+            }
             $("#rc_amount").val(ui.item.desc2);
             $("#rc_amount_true").val(ui.item.desc2);
-            $("#rc_num_job").val(ui.item.desc3);
             $("#rc_company").val(ui.item.desc5);
-            $("#ex_code").val(ui.item.desc6);
+            $("#ex_name").val(ui.item.desc7);
+            $("#ex_id").val(ui.item.desc9);
             
         }
+
     }).data("ui-autocomplete")._renderItem = function (ul, item) {
-        var inner_html = '<div><img class="img-thumbnail" width="40" height="35" src="' + BASE_URL + 'assets/logo/' + item.img + '"> ' + item.label + ' <font color="red"> '+ item.desc4 +'</font></div>';
+        var inner_html = '<div><img class="img-thumbnail" width="40" height="35" src="' + BASE_URL + 'assets/logo/' + item.img + '"> ' + item.label + ' ' + item.desc7 + ' (' + item.desc8 + ') ' + '<font color="red"> ' + item.desc4 + '</font></div>';
         return $("<li></li>")
                 .data("item.autocomplete", item)
                 .append(inner_html)
                 .appendTo(ul);
-
     };
-});
 
-
-$(document).ready(function () {
     $("#rc_num_job").autocomplete({
         source: BASE_URL + 'Autocomplete/auto_jobmiw', // name of controller followed by function
         select: function (event, ui) {
             $("#rc_company").val(ui.item.desc);
             $("#rc_main_code").val(ui.item.desc2);
-            
+
         }
     }).data("ui-autocomplete")._renderItem = function (ul, item) {
         var inner_html = '<div><img class="img-thumbnail" width="40" height="35" src="' + BASE_URL + 'assets/logo/' + item.img + '"> ' + item.label + '</div>';

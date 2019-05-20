@@ -3,7 +3,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Model_report extends CI_Model {
-    public function recieve($data,$id) {
+
+    public function recieve($data, $id) {
         $sql = "select 
             tb1.JOBMIW as tb1_JOBMIW
             ,tb1.JOBORDER as tb1_JOBORDER
@@ -26,7 +27,7 @@ class Model_report extends CI_Model {
             INNER JOIN customer tb3 on tb3.cus_id = tb1.cus_id
             LEFT JOIN (select COUNT(ex_id) as tb9c_ex_id,SUM(ex_total_amount) as tb9_ex_total_amount,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name IN('ใบกำกับภาษี/ใบเสร็จรับเงิน') and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_main_code ORDER BY ex_id DESC) tb9 on tb9.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
             LEFT JOIN (select COUNT(ex_id) as tb10c_ex_id,SUM(ex_total_amount) as tb10_ex_total_amount,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name IN('ใบวางบิล') and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_main_code ORDER BY ex_id DESC) tb10 on tb10.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
-            LEFT JOIN (select sum(tbs1.rc_amount) as tbs1_rc_amount
+            LEFT JOIN (select tbs1.rc_amount as tbs1_rc_amount
             ,tbs1.rc_date_check as tbs1_rc_date_check
             ,tbs1.rc_date_re as tbs1_rc_date_re
             ,tbs1.rc_num_check as tbs1_rc_num_check
@@ -37,21 +38,19 @@ class Model_report extends CI_Model {
             ,tbs1.remark as tbs1_remark
             from recieve_money tbs1
             LEFT JOIN bank_branch tbs2 on tbs2.bb_id = tbs1.bb_id
-            WHERE tbs1.rc_date_current BETWEEN '" . $data['date_start'] . "' AND '" . $data['date_end'] . "'
-            GROUP BY tbs1.rc_main_code ORDER BY tbs1.rc_id DESC) 
+            WHERE tbs1.rc_date_current BETWEEN '" . $data['date_start'] . "' AND '" . $data['date_end'] . "' ORDER BY tbs1.rc_id DESC) 
             tb12 on tb12.tbs1_rc_main_code LIKE CONCAT('%',tb1.main_code,'%')
             
             WHERE tb1.cid = '$id' and tb12.tbs1_rc_id IS NOT NULL
             and tb1.statusjob != 2 and tb1.st_export = '1' GROUP BY tb1.data_id ORDER BY tb1.JOBMIW DESC ";
         return $this->db->query($sql)->result();
     }
-    
+
     public function list_company() {
         $sql = "select * from company_new where cid IN('1','2','3','4','5','6')";
         return $this->db->query($sql)->result();
     }
 
-    
     public function list_print($data) {
         $sql = "select SUM((co_sum-co_sum*0.03)*pt_mul_color) as cosum,SUM((black_sum-black_sum*0.03)*pt_mul_black) as bosum,pt_name,pd_print_id,pt_mul_black from print_detail,print_type where print_detail.pd_print_id = print_type.pt_id
                 and print_detail.pd_date BETWEEN '" . $data['date_start'] . "' AND '" . $data['date_end'] . "' group by print_detail.pd_print_id";
@@ -331,24 +330,22 @@ class Model_report extends CI_Model {
             tb1.JOBMIW as tb1_JOBMIW
             ,tb1.JOBORDER as tb1_JOBORDER
             ,tb1.jobname as tb1_jobname
-            ,CASE 
-            when tb1.md_approved = 1 then 'อนุมัติแล้ว'
-            when tb1.md_approved = 0 then 'ไม่อนุมัติ'
-            ELSE 'Unknow'
-            END as tb1_md_approved
+            ,CASE tb1.md_approved
+            WHEN  '1' THEN 'อนุมัติแล้ว'
+            WHEN  '2' THEN 'ไม่อนุมัติ'
+            ELSE 'Unknown'
+            END AS tb1_md_approved_name
             ,tb2.date_job as tb2_date_job
             ,tb2.user_sale as tb2_user_sale
             ,tb2.am_recieve as tb2_am_recieve
             ,tb2.am_paid as tb2_am_paid
             ,tb2.total_amount as tb2_total_amount
-            ,tb2.remark as tb2_remark
             ,tb3.cus_name as tb3_cus_name
             ,tb3.condate as tb3_condate
-            ,tb6.ls_date as tb6_ls_date
             ,tb6.ls_num as tb6_ls_num
             ,tb7.typesale_name as tb7_typesale_name
             ,tb8.typep_name as tb8_typep_name
-            ,IFNULL(tb9.tb9c_ex_id,0) as datebill
+            ,IFNULL(tb9.tb9c_ex_id,0) as count_exid
             ,tb9.ex_date_check as tb9_ex_date_check
             ,tb9.ex_date_num as tb9_ex_date_num
             ,tb12.tbs1_rc_num_check as tbs1_rc_num_check
@@ -360,7 +357,7 @@ class Model_report extends CI_Model {
             INNER JOIN main_data_detail tb2 on tb2.data_id = tb1.data_id
             INNER JOIN customer tb3 on tb3.cus_id = tb1.cus_id
             INNER JOIN company_new tb4 on tb4.cid = tb1.cid
-            LEFT JOIN log_sent tb6 on tb6.ls_data_id = tb1.data_id
+            LEFT JOIN (select * from log_sent GROUP BY ls_id) tb6 on tb6.ls_data_id = tb1.data_id
             INNER JOIN typesale tb7 on tb7.typesale_id = tb1.typesale_id
             INNER JOIN type_product tb8 on tb8.typep_id = tb1.typep_id
             LEFT JOIN (select COUNT(ex_id) as tb9c_ex_id,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_num,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name IN('ใบกำกับภาษี/ใบเสร็จรับเงิน','ใบวางบิล') and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_main_code ORDER BY ex_id DESC) tb9 on tb9.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
@@ -376,9 +373,64 @@ class Model_report extends CI_Model {
             tb12 on tb12.tbs1_rc_main_code LIKE CONCAT('%',tb1.main_code,'%')
             WHERE tb2.date_job BETWEEN '" . $data['date_start'] . "' AND '" . $data['date_end'] . "' " . $data['typesale_id'] . "
             " . $data['group_sale'] . " " . $data['cus_id'] . " " . $data['typep_id'] . " " . $data['cid'] . " " . $data['where_f'] . " " . $data['company_type'] . "
-            and tb1.statusjob != 2 and tb1.st_export = '1' and tb12.tbs1_rc_amount < 2000 $other GROUP BY tb1.data_id  ORDER BY tb1.JOBMIW DESC ";
+            and tb1.statusjob != 2 and tb1.st_export = '1' and tb12.tbs1_rc_amount IS NULL and tb6.ls_id IS NOT NULL $other ORDER BY tb1.JOBMIW DESC ";
         return $this->db->query($sql)->result();
     }
+
+//
+//    public function nobillo($data, $other) {
+//        $sql = "select 
+//            tb1.JOBMIW as tb1_JOBMIW
+//            ,tb1.JOBORDER as tb1_JOBORDER
+//            ,tb1.jobname as tb1_jobname
+//            ,CASE 
+//            when tb1.md_approved = 1 then 'อนุมัติแล้ว'
+//            when tb1.md_approved = 0 then 'ไม่อนุมัติ'
+//            ELSE 'Unknow'
+//            END as tb1_md_approved
+//            ,tb2.date_job as tb2_date_job
+//            ,tb2.user_sale as tb2_user_sale
+//            ,tb2.am_recieve as tb2_am_recieve
+//            ,tb2.am_paid as tb2_am_paid
+//            ,tb2.total_amount as tb2_total_amount
+//            ,tb2.remark as tb2_remark
+//            ,tb3.cus_name as tb3_cus_name
+//            ,tb3.condate as tb3_condate
+//            ,tb6.ls_date as tb6_ls_date
+//            ,tb6.ls_num as tb6_ls_num
+//            ,tb7.typesale_name as tb7_typesale_name
+//            ,tb8.typep_name as tb8_typep_name
+//            ,IFNULL(tb9.tb9c_ex_id,0) as datebill
+//            ,tb9.ex_date_check as tb9_ex_date_check
+//            ,tb9.ex_date_num as tb9_ex_date_num
+//            ,tb12.tbs1_rc_num_check as tbs1_rc_num_check
+//            ,tb12.tbs1_rc_date_check as tbs1_rc_date_check
+//            ,IFNULL(tb12.tbs1_rc_amount,0) as tbs1_rc_amount
+//            ,tb12.tbs2_bank_name_th as tbs2_bank_name_th
+//            ,tb12.tbs2_bb_name_th as tbs2_bb_name_th
+//            from main_data tb1
+//            INNER JOIN main_data_detail tb2 on tb2.data_id = tb1.data_id
+//            INNER JOIN customer tb3 on tb3.cus_id = tb1.cus_id
+//            INNER JOIN company_new tb4 on tb4.cid = tb1.cid
+//            LEFT JOIN log_sent tb6 on tb6.ls_data_id = tb1.data_id
+//            INNER JOIN typesale tb7 on tb7.typesale_id = tb1.typesale_id
+//            INNER JOIN type_product tb8 on tb8.typep_id = tb1.typep_id
+//            LEFT JOIN (select COUNT(ex_id) as tb9c_ex_id,ex_id,ex_date_num,ex_company,ex_jobmiw,ex_num,ex_date_check,ex_main_code,ex_num_true from export_detail_test where ex_name IN('ใบกำกับภาษี/ใบเสร็จรับเงิน','ใบวางบิล') and ex_detail_ex = 1 and ex_status = 1 GROUP BY ex_main_code ORDER BY ex_id DESC) tb9 on tb9.ex_main_code LIKE CONCAT('%',tb1.main_code,'%')
+//            LEFT JOIN (select sum(tbs1.rc_amount) as tbs1_rc_amount
+//            ,tbs1.rc_date_check as tbs1_rc_date_check
+//            ,tbs1.rc_num_check as tbs1_rc_num_check
+//            ,tbs1.rc_main_code as tbs1_rc_main_code
+//            ,tbs2.bank_name_th as tbs2_bank_name_th
+//            ,tbs2.bb_name_th as tbs2_bb_name_th
+//            from recieve_money tbs1
+//            LEFT JOIN bank_branch tbs2 on tbs2.bb_id = tbs1.bb_id
+//            GROUP BY tbs1.rc_main_code ORDER BY tbs1.rc_id DESC) 
+//            tb12 on tb12.tbs1_rc_main_code LIKE CONCAT('%',tb1.main_code,'%')
+//            WHERE tb2.date_job BETWEEN '" . $data['date_start'] . "' AND '" . $data['date_end'] . "' " . $data['typesale_id'] . "
+//            " . $data['group_sale'] . " " . $data['cus_id'] . " " . $data['typep_id'] . " " . $data['cid'] . " " . $data['where_f'] . " " . $data['company_type'] . "
+//            and tb1.statusjob != 2 and tb1.st_export = '1' and tb12.tbs1_rc_amount < 2000 $other ORDER BY tb1.JOBMIW DESC ";
+//        return $this->db->query($sql)->result();
+//    }
 
     public function conclude_list($data, $user, $bu) {
         $sql = "select 
@@ -401,8 +453,8 @@ class Model_report extends CI_Model {
                 LEFT JOIN typesale tb7 on tb7.typesale_id = tb1.typesale_id
                 LEFT JOIN type_product tb8 on tb8.typep_id = tb1.typep_id
                 WHERE tb2.date_job BETWEEN '" . $data['date_start'] . "' AND '" . $data['date_end'] . "'
-                and tb1.statusjob != 2 and tb2.user_sale = '" . $user . "' and tb1.cid = '1' " . $bu . "
-                and tb1.st_export = 1 ORDER BY tb2.date_job ASC";
+                and tb1.statusjob != 2 and tb2.user_sale IN('$user') and tb1.cid = '1' " . $bu . "
+                and tb1.st_export = 1 ORDER BY tb1.typesale_id ASC,tb2.date_job ASC";
         return $this->db->query($sql)->result();
     }
 
@@ -699,7 +751,7 @@ class Model_report extends CI_Model {
                      GROUP BY tb1.cus_id ORDER BY tb1.typesale_id DESC,tb2.date_job DESC";
         return $this->db->query($sql)->result();
     }
-    
+
     public function week_user_list($data) {
         $sql = "select 
             tb2.user_sale as tb2_user_sale
@@ -785,7 +837,5 @@ class Model_report extends CI_Model {
             ,'" . $_POST['group_sale'] . "','" . $_POST['cus_id'] . "','" . $_POST['type_file'] . "','" . $this->session->userdata('employee_id') . "')";
         $this->db->query($sql);
     }
-    
-
 
 }

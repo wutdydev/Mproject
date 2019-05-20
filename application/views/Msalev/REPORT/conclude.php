@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,9 +13,9 @@
         <table  class="table" width="100%" cellspacing="0" border="1" Cellpadding = "7" >
             <thead>
                 <tr bgcolor="#F5F5F5"> 
-                    <th width ="2%">ลำดับ</th>
-                    <th width ="15%">บริษัท</th>
-                    <th width ="5%">ประเภทงาน</th>
+                    <th width ="2%" bgcolor="#F5F5F5">ลำดับ</th>
+                    <th width ="15%" bgcolor="#F5F5F5">บริษัท</th>
+                    <th width ="5%" bgcolor="#F5F5F5">ประเภทงาน</th>
                     <th width ="10%">JOBMIW</th>
                     <th width ="15%">ชื่องาน</th>
                     <th width ="10%">Surcharge</th>

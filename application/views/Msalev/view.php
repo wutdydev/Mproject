@@ -19,9 +19,9 @@
                                 <tr>
                                     <td width="13%" align="center"><?php echo icons_status($query[0]['tb10_count_ex_id'], 'ใบปะหน้า'); ?></td>
                                     <td width="1%"></td>
-                                    <td width="13%" align="center"><?php echo icons_status($query[0]['tb6_count_data_id'], 'ใบส่งของ'); ?></td>
+                                    <td width="13%" align="center"><?php echo icons_statusmd($query[0]['tb6_count_data_id'], 'ใบส่งของ'); ?></td>
                                     <td width="1%"></td>
-                                    <td width="13%" align="center"><?php echo icons_status($query[0]['tb1_md_approved'], 'อนุมัติ'); ?></td>
+                                    <td width="13%" align="center"><?php echo icons_statusmd($query[0]['tb1_md_approved'], 'อนุมัติ'); ?></td>
                                     <td width="1%"></td>
                                     <td width="13%" align="center"><?php echo icons_status2($query[0]['tb8_count_ex_id'], $query[0]['tb8_ex_total_amount'], $query[0]['tb2_am_recieve'], 'ใบวางบิล'); ?></td>
                                     <td width="1%"></td>
@@ -29,7 +29,7 @@
                                     <td width="1%"></td>
                                     <td width="13%" align="center"><?php echo icons_status2($query[0]['tb12_count_rc_id'], $query[0]['tb12_rc_amount'], $query[0]['tb2_am_recieve'], 'รับชำระเงิน'); ?></td>
                                     <td width="1%"></td>
-                                    <td width="13%" align="center"><?php echo icons_status($query[0]['tb1_statusjob'], 'สถานะ'); ?></td>
+                                    <td width="13%" align="center"><?php echo icons_statusmd($query[0]['tb1_statusjob'], 'สถานะ'); ?></td>
 
                                 </tr>
                             </table>

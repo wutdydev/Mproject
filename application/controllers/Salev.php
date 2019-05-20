@@ -25,13 +25,13 @@ class Salev extends MY_Controller {
         $this->load->library('Lib_widget');
         $data = $this->lib_widget->check_view();
 
-        $this->load->view('template/header', array('title' => "Home"));
+        $this->load->view('template/header', array('title' => $data['tt_name']));
         $this->load->view('Msalev/menu');
-        $this->load->view('Msalev/index', $data);
+        $this->load->view('Msalev/' . $data['file'], $data);
         $this->load->view('template/footer');
-        $this->load->view('template/Other/f_index'); //js / css other
+        $this->load->view('template/Other/' . $data['footer']); //js / css other
     }
-    
+
     public function Search() {
         $this->load->library('form_validation');
         $this->load->library('Lib_salev');
@@ -47,10 +47,10 @@ class Salev extends MY_Controller {
             $this->load->view('template/footer');
             $this->load->view('template/Other/' . $rec_array['footer']); //js / css other
         } else {
-           
+            
         }
     }
-    
+
     public function Wait() {
         $this->load->library('form_validation');
         $this->load->library('Lib_salev');
@@ -66,7 +66,7 @@ class Salev extends MY_Controller {
             $this->load->view('template/footer');
             $this->load->view('template/Other/' . $rec_array['footer']); //js / css other
         } else {
-           
+            
         }
     }
 
@@ -107,9 +107,9 @@ class Salev extends MY_Controller {
         $this->load->helper('All');
 
         $this->form_validation->set_rules('rc_amount', 'rc amount', 'required');
-        $rec_array = $this->lib_recievem->check_recievem();
-        if ($this->form_validation->run() == FALSE) {
 
+        if ($this->form_validation->run() == FALSE) {
+            $rec_array = $this->lib_recievem->check_recievem();
             $this->load->view('template/header', array('title' => $rec_array['name']));
             $this->load->view('Msalev/menu');
             $this->load->view('Msalev/' . $rec_array['file'], $rec_array); //ถ้ายังไม่ได้ Submit ใหเด้งไปที่หน้ากรอกข้อมูล/แก้ไข
@@ -151,10 +151,10 @@ class Salev extends MY_Controller {
         $this->load->helper('All');
 
         $this->form_validation->set_rules('date_start', 'date start', 'required');
-        
+
         if ($this->form_validation->run() == FALSE) {
             $rec_array = $this->lib_bv->check_ex_bv();
-            
+
             $this->load->view('template/header', array('title' => $rec_array['name']));
             $this->load->view('Msalev/menu');
             $this->load->view('Msalev/' . $rec_array['file'], $rec_array); //ถ้ายังไม่ได้ Submit ใหเด้งไปที่หน้ากรอกข้อมูล/แก้ไข
@@ -241,7 +241,7 @@ class Salev extends MY_Controller {
             $this->load->view('template/footer');
             $this->load->view('template/Other/' . $rec_array['footer']); //js / css other
         } else {
-            $data_conv = $this->lib_bv->process_cn($rec_data);
+            $data_conv = $this->lib_bv->process_cn($rec_array);
             $html['html'] = $this->load->view('Msalev/PDF/' . $data_conv['file_ex'], $data_conv, true);  // true ที่อยู่หน้า โหลด มันจะส่งข้อมูล html ทั้งหมดในหน้านั้นกลับมาใน function showpdf()
             $html['type'] = "A4";
             $html['name'] = $data_conv['name'];
@@ -265,7 +265,7 @@ class Salev extends MY_Controller {
             $this->load->view('template/footer');
             $this->load->view('template/Other/' . $rec_array['footer']); //js / css other
         } else {
-            $data_conv = $this->lib_bv->process_cover($rec_data);
+            $data_conv = $this->lib_bv->process_cover($rec_array);
             $html['html'] = $this->load->view('Msalev/PDF/' . $data_conv['file_ex'], $data_conv, true);  // true ที่อยู่หน้า โหลด มันจะส่งข้อมูล html ทั้งหมดในหน้านั้นกลับมาใน function showpdf()
             $html['type'] = "A4";
             $html['name'] = $data_conv['name'];
@@ -318,7 +318,7 @@ class Salev extends MY_Controller {
             redirect($this->uri->uri_string()); //ทำเสร็จแล้วให้ refresh ที่ Function เดิมเพื่อรีหน้าข้อมูล
         }
     }
-    
+
     public function PP30() {
         $this->load->library('form_validation');
         $this->load->helper('All');
@@ -387,6 +387,35 @@ class Salev extends MY_Controller {
         }
     }
 
+    public function TEST() {
+        $this->load->view('Msalev/blank'); //ถ้ายังไม่ได้ Submit ใหเด้งไปที่หน้ากรอกข้อมูล/แก้ไข
+    }
+
+    public function Find_test() {
+        $this->load->helper('All');
+        $this->load->model('Model_Msalev');
+        //รับค่าจาก jquery
+        $orderm = $this->input->get('order[0][column]');
+        $prm['length'] = $this->input->post('length'); //ความยาวของข้อมูล เช่น 25 record
+        $prm['page'] = $this->input->post('page');
+//        $prm['order'] = $this->input->post('order');
+        $prm['start'] = $this->input->post('start'); //จำนวนที่แสดง
+        $prm['draw'] = $this->input->post('draw');
+        $prm['keyword'] = trim($this->input->post('search[value]'));
+        $prm['column'] = $this->input->post("order[0][column]");
+        $prm['dir'] = $this->input->post('order[0][dir]');
+
+        /* -------------------------------------------------------------------- */
+        $results = $this->Model_Msalev->query_customer_list2($prm);
+        $output = array(
+            "draw" => $prm['draw'], // ครั้งที่เข้ามาดึงข้อมูล
+            "recordsTotal" => $results['row'], // ข้อมูลทั้งหมดที่มี
+            "recordsFiltered" => $results['row_condition'], // ข้อมูลเฉพาะที่เข้าเงื่อนไข เช่น ค้นหา แล้ว       
+            "data" => $results['result'] // รายการ array ข้อมูลที่จะใช้งาน
+        );
+        echo json_encode($output);
+    }
+
     public function Customer() {
         $this->load->library('form_validation');
         $this->load->library('Lib_customer');
@@ -394,7 +423,6 @@ class Salev extends MY_Controller {
         $rec_array = $this->lib_customer->check_customer(); //รับค่า array ที่ return มา
 
         $this->form_validation->set_rules('cus_name', 'Customer Name', 'required');
-
         if ($this->form_validation->run() == FALSE) {
 
             $this->load->view('template/header', array('title' => $rec_array['title_name']));
@@ -414,7 +442,48 @@ class Salev extends MY_Controller {
         $this->lib_request->check_request(); //รับค่า array ที่ return มา
     }
 
-    
+    public function Ajaxload() {
+        $this->load->library('Lib_ajax');
+        $this->load->helper('All');
+        $data = $this->lib_ajax->check_search();
+        $this->load->view('Msalev/' . $data['file'], $data); //ถ้ายังไม่ได้ Submit ใหเด้งไปที่หน้ากรอกข้อมูล/แก้ไข
+    }
+
+    public function TJSON() {
+        $this->load->library('form_validation');
+        $this->load->helper('All');
+
+        $this->form_validation->set_rules('fname', 'First Name', 'required');
+        if ($this->form_validation->run() == FALSE) {
+            $this->load->view('Msalev/TJSON/JSON_T1');
+        } else {
+            echo $_POST['ffname'];
+        }
+    }
+
+    public function EJSON() {
+        if ($this->uri->segment(3) == '1') {
+            echo $_POST['ffname'];
+            echo $_POST['llanme'];
+        }else if ($this->uri->segment(3) == '2') {
+            echo $_POST['fname2'];
+            echo $_POST['lname2'];
+        }else if ($this->uri->segment(3) == '3') {
+          $this->load->model('Model_Msalev');
+          $result = $this->Model_Msalev->list_company();
+          foreach ($result as $res){
+              $data[] = array("name" => $res->company_name,
+                  "img" => $res->company_img);
+          }
+         echo json_encode($data);
+        }
+        
+    }
+
+    public function Ajax() {
+        $this->load->library('Lib_ajax');
+        $this->lib_ajax->check_now();
+    }
 
 }
 

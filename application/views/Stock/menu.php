@@ -19,9 +19,9 @@
             <?php
             if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
                 ?>
-                <ul class="nav navbar-nav navbar-left navbar-top-links">
+<!--                <ul class="nav navbar-nav navbar-left navbar-top-links">
                     <li><a href="<?php echo base_url('#'); ?>"><i class="fa fa-truck fa-fw"></i> Messenger</a></li>
-                </ul>
+                </ul>-->
                 <ul class="nav navbar-nav navbar-left navbar-top-links">
                     <li><a href="<?php echo base_url('Other/'); ?>"><i class="fa fa-external-link fa-fw"></i> ระบบอื่นๆ</a></li>
                 </ul>

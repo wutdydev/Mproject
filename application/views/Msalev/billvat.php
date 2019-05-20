@@ -11,7 +11,7 @@
     </div>
 
     <div class="row">
-        <form role="form" method="post" enctype="multipart/form-data" id="F1" name="F1" action="<?php echo base_url()."Salev/Export/BILL/".$this->uri->segment(4) ?> ">
+        <form role="form" method="post" enctype="multipart/form-data" id="F1" name="F1" target="_blank" action="<?php echo base_url()."Salev/Export/BILL/".$this->uri->segment(4) ?> ">
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -132,7 +132,7 @@
             </div>
         </form>
 
-        <form role="form" method="post" enctype="multipart/form-data" id="F2" name="F2" action="<?php echo base_url()."Salev/Export/VAT/".$this->uri->segment(4) ?> ">
+        <form role="form" method="post" enctype="multipart/form-data" id="F2" name="F2" target="_blank" action="<?php echo base_url()."Salev/Export/VAT/".$this->uri->segment(4) ?> ">
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -278,7 +278,7 @@
         <?php
         if ($query[0]['tb1_cid'] == 5) {
         ?>
-        <form role="form" method="post" enctype="multipart/form-data" id="F3" name="F3" action="<?php echo base_url()."Salev/Export/RECEIPT/".$this->uri->segment(4) ?> ">
+        <form role="form" method="post" enctype="multipart/form-data" id="F3" name="F3" target="_blank" action="<?php echo base_url()."Salev/Export/RECEIPT/".$this->uri->segment(4) ?> ">
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">

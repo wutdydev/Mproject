@@ -177,13 +177,20 @@ class Lib_report {
             $data['svr_name'] = "สรุปยอดขายเฉพาะ Food";
             $this->export($data);
             
+        }else if ($this->CI->uri->segment(3) == 'ProcessNB') {
+            $data = $this->CI->session->userdata('data_Quarter');
+            $data['query_c'] = $this->CI->Model_Msalev->query_company_show($this->CI->uri->segment(4));
+            $data['svr_file'] = "nobill";
+            $data['cid'] = " and tb1.cid = '".$this->CI->uri->segment(4)."'";
+            $data['query'] = $this->CI->Model_report->nobill($data,"and tb9.ex_id IS NULL");
+            $data['svr_name'] = "JOBที่ยังไม่ได้วางบิล-รับเช็ค ".$data['query_c'][0]['company_a'];
+            $this->export($data);
+            
         }else {
             $dataj['name'] = "รูปแบบ URL ไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง";
             alertjs($dataj);
         }
         
-         
-
         return $data;
     }
 
@@ -312,6 +319,7 @@ class Lib_report {
             $this->export($data);
         } else if ($result[0]['svr_id'] == 5) {
             $data['query'] = $this->CI->Model_report->month3($data);
+            $this->export($data);
         } else if ($result[0]['svr_id'] == 6 or $result[0]['svr_id'] == 8) {
             $resultm = $this->CI->Model_report->year_fixedcost_month($data);
             $i = 1;
@@ -347,13 +355,13 @@ class Lib_report {
             $data['queryricco'] = $this->CI->Model_report->conclude_list($data,"ชัยพันธ์"," and tb1.cus_id = '2097'");
             $data['queryplus'] = $this->CI->Model_report->conclude_list($data,"ชัยพันธ์"," and tb1.cus_id = '2100'");
             $data['querythd'] = $this->CI->Model_report->conclude_list($data,"วัลย์ลิกา","");
-            $data['querymiw'] = $this->CI->Model_report->conclude_list($data,"อัญชลี"," and tb1.cus_id = '1584'");
+            $data['querymiw'] = $this->CI->Model_report->conclude_list($data,"อัญชลี','วิภาวี','ปิยาพัชร"," and tb1.cus_id = '1584'");
             $this->export($data);
         } else if ($result[0]['svr_id'] == 11) {
             $data['query'] = $this->CI->Model_report->nobill($data,"and tb9.ex_id IS NULL");
             $this->export($data);
         } else if ($result[0]['svr_id'] == 12) {
-            $data['query'] = $this->CI->Model_report->nobill($data,"and tb9.ex_id IS NOT NULL");
+            $data['query'] = $this->CI->Model_report->nobill($data,"and tb9.ex_id IS NOT NULL ");
             $this->export($data);
         } else if ($result[0]['svr_id'] == 13) {
             $data['query'] = $this->CI->Model_report->nobill_all($data,"");
@@ -462,12 +470,14 @@ class Lib_report {
             for($i = 1;$i<=8;$i++){ // 1-5 บริษัทปกติ / 6 = MIW MARKETING / 7 = MIW PRODUCTION
                 OpenInNewTab(base_url("Salev/Report/Quarter/".$i));
             }
-            
                 OpenInNewTab(base_url("Salev/Report/QuarterFood"));//for Food
-            
-            
             close();
-            
+        }else if ($result[0]['svr_id'] == 24) { //report พิเศษ ต้องเซ็ตค่าให้เองหมด
+            $this->CI->session->set_userdata('data_Quarter', $data);
+            for($i = 1;$i<=5;$i++){
+                OpenInNewTab(base_url("Salev/Report/ProcessNB/".$i));
+            }
+            close();
         }
         $this->CI->Model_report->query_reportlog_ins($data); //log เข้าระบบ
     }

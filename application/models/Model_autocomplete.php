@@ -143,18 +143,23 @@ class Model_autocomplete extends CI_Model {
     public function fetch_vat($keyword) {
         $this->load->helper('All');
         $sql = "SELECT 
+            tb1.ex_id as tb1_ex_id,
             tb1.ex_num_true as tb1_ex_num_true,
             tb1.ex_total_amount as tb1_ex_total_amount,
             tb1.ex_code as tb1_ex_code,
             tb1.ex_main_code as tb1_ex_main_code,
             tb1.ex_jobmiw as tb1_ex_jobmiw,
+            tb1.ex_name as tb1_ex_name,
+            tb1.ex_detail as tb1_ex_detail,
             tb1.ex_company as tb1_ex_company,
             tb1.ex_date_num as tb1_ex_date_num,
+            tb1.ex_date_check as tb1_ex_date_check,
             tb2.company_img as tb2_company_img
         FROM export_detail_test tb1
         LEFT JOIN company_new tb2 on tb2.cid = tb1.ex_company
         WHERE tb1.ex_detail_ex = 1
         and tb1.ex_status = 1
+        and ex_name IN('ใบวางบิล','ใบกำกับภาษี/ใบเสร็จรับเงิน')
         and tb1.ex_num_true LIKE '%$keyword%'
         and tb1.ex_company IN('" . $this->session->userdata('perrm_cid') . "')
         ORDER BY tb1.ex_id DESC limit 50";
@@ -166,10 +171,12 @@ class Model_autocomplete extends CI_Model {
                     'desc2' => $row->tb1_ex_total_amount,
                     'img' => $row->tb2_company_img,
                     'desc3' => $row->tb1_ex_jobmiw,
-                    'desc4' => conv_date($row->tb1_ex_date_num),
+                    'desc4' => convdate_null($row->tb1_ex_date_check),
                     'desc5' => $row->tb1_ex_company,
-                    'desc6' => $row->tb1_ex_code
-                    
+                    'desc6' => $row->tb1_ex_code,
+                    'desc7' => $row->tb1_ex_name,
+                    'desc8' => $row->tb1_ex_detail,
+                    'desc9' => $row->tb1_ex_id
                 );
             echo json_encode($arr_result);
         }
@@ -193,7 +200,7 @@ class Model_autocomplete extends CI_Model {
     
     public function fetch_contact($keyword) {
         $sql = "SELECT * FROM paper_contact_supp 
-        WHERE ppcs_name LIKE '%$keyword%' limit 50";
+        WHERE ppcs_name LIKE '%$keyword%' and ppcs_type = 1 limit 50";
         if ($this->db->query($sql)->num_rows() > 0) {
             foreach ($this->db->query($sql)->result() as $row)
                 $arr_result[] = array(

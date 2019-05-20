@@ -823,6 +823,17 @@ class Lib_stock {
             $data['ppcs_email'] = $query[0]['ppcs_email'];
             $data['ppcs_address'] = $query[0]['ppcs_address'];
             $data['ppcs_detail'] = $query[0]['ppcs_detail'];
+        }else if ($this->CI->uri->segment(3) == 'Switch' and ! empty($this->CI->uri->segment(4))) {
+            $query = $this->CI->Model_stock->query_supplier_id_selected($this->CI->uri->segment(4));
+            if($query[0]['ppcs_type'] == 1){
+                $type = 0;
+            }else{
+                $type = 1;
+            }
+            $str = $this->CI->Model_stock->query_supplier_id_update_type($type,$this->CI->uri->segment(4));
+            $this->session_warn($str);
+            redirect("Stock/INFOSupplier/List/" . $query[0]['ppcs_code']);
+            
         } else {
             $dataj['name'] = "รูปแบบ URL ไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง";
             alertjs($dataj);
@@ -1687,7 +1698,7 @@ class Lib_stock {
 
             $result = $this->CI->Model_stock->query_order_show($this->CI->uri->segment(4)); //ไปเรียกข้อมูลเดิมมาโชวก่อน
 
-            if ($result[0]['tb1_ppo_save'] != $_POST['ppo_save']) { //เช็คก่อนว่ามีการเปลี่ยนแปลงประเภท stock หรือไม่ ถ้ามีต้องเข้าไปลูป stock เดิมออกมาแก้ให้หมด
+            if ($result[0]['tb1_ppo_save'] != $_POST['ppo_save'] or $result[0]['tb1_ppc_id'] != $_POST['ppc_id']) { //เช็คก่อนว่ามีการเปลี่ยนแปลงประเภท stock หรือไม่ ถ้ามีต้องเข้าไปลูป stock เดิมออกมาแก้ให้หมด
                 $result_b = $this->CI->Model_stock->query_order_list($result[0]['tb1_ppo_id']); //order
 
                 foreach ($result_b as $restb) { //loop รายการทั้งหมดเดิมออกมาก่อน
@@ -1707,7 +1718,7 @@ class Lib_stock {
                     $data['pp_id'] = $restb->tb1_pp_id; //กระดาษ ของ stock
                     $data['ppo_cid'] = $result[0]['tb1_ppo_cid']; //กระดาานี้บริษัทอะไร
                     $data['ppo_cid_dpm'] = $result[0]['tb1_ppo_cid_dpm']; //แผนกอะไร
-                    $data['ppc_id'] = $result[0]['tb1_ppc_id']; //เก็บที่ไหน
+                    $data['ppc_id'] = $_POST['ppc_id']; //เก็บที่ไหน
                     $data['ppt_id'] = $restb->tb1_ppt_id; //ประเภทกระดาษอะไร
                     $data['ppo_save'] = $_POST['ppo_save']; //สถานะเก็บ 1 / ไม่เก็บ 0
                     $check_st = $this->CI->Model_stock->query_stock_count($data); //เช็คว่าเคยมี stock ในระบบหรือยัง

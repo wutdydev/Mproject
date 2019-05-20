@@ -54,9 +54,7 @@
                             <button type="button" class="btn btn-outline btn-default btn-sm" data-placement="top" title="ข้อมูลของ JOB" onclick="window.open('<?php echo base_url('Salev/Maindata/EDIT') . '/' . $res->tb1_data_id ?>')">&nbsp;<i class="fa fa-search"></i>&nbsp;</button>
                             <button type="button" class="btn btn-outline btn-warning btn-sm" data-placement="top" title="สถานะ"  onclick="window.open('<?php echo base_url('Salev/Status/View') . '/' . $res->tb1_data_id ?>')">&nbsp;<i class="fa fa-snapchat"></i>&nbsp;</button>
                             <button type="button" class="btn btn-outline btn-default btn-sm" data-placement="top" title="สแกนไฟล์"  onclick="window.open('<?php echo base_url('Salev/Maindata/Upload') . '/' . $res->tb1_data_id ?>')">&nbsp;<i class="fa fa-cloud-upload"></i> <?php echo $res->tb6_up_id ?></button>
-
                             <button type="button" class="btn btn-outline btn-danger btn-sm confirmation2" href="<?php echo base_url('Salev/Maindata/Recover') . '/' . $res->tb1_data_id ?>">&nbsp;<i class="fa fa-rotate-right" ></i> กู้คืน&nbsp;</button>
-
                         </td>
                     </tr>
                     <?php

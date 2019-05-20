@@ -41,14 +41,14 @@ class Lib_request {
                 $data['slr_code'] = $slr_code;
                 $data['slr_status'] = 1;
                 $data['slr_detail'] = htmlspecialchars($_POST['slr_detail']);
-                $data['token'] = "S06GfEwOxGzXNJXjFoBwOsgOsziy9gStpkGbRonrNWl";
+                $data['token'] = "07Q5wUzeroZOzVJFwaGLt32gcg3EuefUliSebTWLx1j";
                 $data['text'] = array('message' => 'มีการขอแก้ไขข้อมูลลูกค้า
                     CODE:' . $slr_code . '
                     จากคุณ:' . $this->CI->session->userdata('fname_thai') . ' ' . $this->CI->session->userdata('lname_thai') . '
                     ลูกค้า:' . $resultc[0]['cus_name'] . '
                     เมื่อเวลา:' . $datenow . '
                     หมายเหตุ:' . $_POST['slr_detail'] . '
-                    อนุมัติ: http://localhost/MIW/Link/Allow/' . $slr_code . '');
+                    อนุมัติ: '.  base_url().'Link/Allow/' . $slr_code . '');
                 $this->CI->lib_line->api_line($data); // ส่งข้อความไปใน LINE
                 $this->CI->Model_Msalev->query_line_request($data); //บันทึกข้อมูลลงประวัติการส่ง
                 $this->CI->Model_Msalev->query_customers_upreq(2, $resultc[0]['cus_id']);
@@ -82,7 +82,7 @@ class Lib_request {
                 $data['slr_code'] = $slr_code;
                 $data['slr_status'] = 1;
                 $data['slr_detail'] = htmlspecialchars($_POST['slr_detail']);
-                $data['token'] = "bz9gIFavjHbMWyRxYPU7zU6uI71PlKUzFvC2pQ8egHm";
+                $data['token'] = "oxuB3KPtGv20saD2JdnP3LjEVwOsFquIelqfIyAUz7d";
                 $data['text'] = array('message' => "มีการขอแก้ไขข้อมูลใบสั่งซื้อ
                     CODE:" . $slr_code . "
                     จากคุณ:" . $this->CI->session->userdata('fname_thai') . " " . $this->CI->session->userdata('lname_thai') . "
@@ -94,7 +94,7 @@ class Lib_request {
                     รายการ:จำนวน ".$k." รายการ ยอดรวม ".  number_format($sum)."\n" . $text . "
                     เมื่อเวลา:" . $datenow . "
                     หมายเหตุ:" . $_POST['slr_detail'] . "
-                    อนุมัติ: http://localhost/MIW/Link/Allow/" . $slr_code . "");
+                    อนุมัติ: ".  base_url()."Link/Allow/" . $slr_code . "");
                 $this->CI->lib_line->api_line($data); // ส่งข้อความไปใน LINE
                 $this->CI->Model_Msalev->query_line_request($data); //บันทึกข้อมูลลงประวัติการส่ง
                 $this->CI->Model_Msalev->query_paper_order_ppo_edit(2, $result[0]['tb1_ppo_id']);
@@ -110,8 +110,8 @@ class Lib_request {
                 $data['slr_code'] = $slr_code;
                 $data['slr_status'] = 1;
                 $data['slr_detail'] = htmlspecialchars($_POST['slr_detail']);
-                $data['token'] = "S06GfEwOxGzXNJXjFoBwOsgOsziy9gStpkGbRonrNWl";
-                $data['text'] = array('message' => "มีการขอแก้ไขข้อมูลใบสั่งซื้อ
+                $data['token'] = "07Q5wUzeroZOzVJFwaGLt32gcg3EuefUliSebTWLx1j";
+                $data['text'] = array('message' => "มีการขอแก้ไขข้อมูลยอดขาย
                     CODE:" . $slr_code . "
                     จากคุณ:" . $this->CI->session->userdata('fname_thai') . " " . $this->CI->session->userdata('lname_thai') . "
                     ใบเสนอราคา:" . $result[0]['tb1_JOBMIW'] . "
@@ -123,7 +123,7 @@ class Lib_request {
                     กำไรขั้นต้น:" . number_format($result[0]['tb2_total_amount'],2) . "
                     เมื่อเวลา:" . $datenow . "
                     หมายเหตุ:" . $_POST['slr_detail'] . "
-                    อนุมัติ: http://localhost/MIW/Link/Allow/" . $slr_code . "");
+                    อนุมัติ: ".  base_url()."Link/Allow/" . $slr_code . "");
                 $this->CI->lib_line->api_line($data); // ส่งข้อความไปใน LINE
                 $this->CI->Model_Msalev->query_line_request($data); //บันทึกข้อมูลลงประวัติการส่ง
                 $this->CI->Model_Msalev->query_maindata_setting_edit(2, $result[0]['tb1_data_id']);

@@ -1,5 +1,6 @@
 <link href="<?php echo base_url() ?>assets/css/jquery-ui.css" rel="stylesheet">
 <script src="<?php echo base_url() ?>assets/js/js_check_null_order.js" type="text/javascript"></script>
+<link rel="stylesheet" href="<?php echo base_url() ?>assets/jquery-confirm/dist/jquery-confirm.min.css">
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
@@ -144,14 +145,35 @@
                                 <tr>
                                     <td width='5%' align='center'><?php echo $i ?></td>
                                     <td width='7%' align='center'><?php echo $res->ppcs_name ?></td>
-                                    <td width='30%' align='left'><?php echo $res->ppcs_address ?></td>
+                                    <td width='28%' align='left'><?php echo $res->ppcs_address ?></td>
                                     <td width='10%' align='center'><?php echo $res->ppcs_mobile ?></td>
                                     <td width='10%' align='center'><?php echo $res->ppcs_tel ?></td>
-                                    <td width='10%' align='center'><?php echo $res->ppcs_fax ?></td>
-                                    <td width='10%' align='center'><?php echo $res->ppcs_email ?></td>
-                                    <td width='20%' align='left'><?php echo $res->ppcs_detail ?></td>
+                                    <td width='8%' align='center'><?php echo $res->ppcs_fax ?></td>
+                                    <td width='8%' align='center'><?php echo $res->ppcs_email ?></td>
+                                    <td width='10%' align='left'><?php echo $res->ppcs_detail ?></td>
                                     <td align='left'>
-                                        <button type="button" data-toggle="tooltip" data-placement="top" title="แก้ไขราคากระดาษ" onclick="window.location = '<?php echo base_url("Stock/INFOSupplier/EDIT/".$res->ppcs_id) ?>'" class="btn btn-outline btn-default btn-sm"><i class="fa fa-wrench" ></i> แก้ไข</button>
+                                        <?php
+                                        if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
+                                            ?>
+                                            <button type="button" data-toggle="tooltip" data-placement="top" title="แก้ไขราคากระดาษ" onclick="window.location = '<?php echo base_url("Stock/INFOSupplier/EDIT/" . $res->ppcs_id) ?>'" class="btn btn-outline btn-default btn-sm"><i class="fa fa-wrench" ></i> แก้ไข</button>
+                                            <?php
+                                        }
+                                        ?>
+
+                                        <?php
+                                        if ($res->ppcs_type == 1) {
+                                            ?>
+                                            <button type="button" href="<?php echo base_url("Stock/INFOSupplier/Switch/" . $res->ppcs_id) ?>" class="btn btn-outline btn-success btn-sm confirmation2"><i class="fa fa-check" ></i> ใช้งาน</button>
+                                            <?php
+                                        } else {
+                                            ?>    
+                                            <button type="button" href="<?php echo base_url("Stock/INFOSupplier/Switch/" . $res->ppcs_id) ?>" class="btn btn-outline btn-danger btn-sm confirmation"><i class="fa fa-check" ></i> ยกเลิก</button>
+                                            <?php
+                                        }
+                                        ?>    
+
+
+
                                     </td>
                                 </tr>
                                 <?php

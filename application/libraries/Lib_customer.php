@@ -121,6 +121,14 @@ class Lib_customer {
             $data_ok = $this->CI->Model_Msalev->query_customer_edit_ok(); //ลบข้อมูลลูกค้าตาม segment id
             $this->session_warn($data_ok);
             redirect($this->CI->session->userdata('data_uri'));
+        }else if ($this->CI->uri->segment(3) == 'TEST') {
+           $this->fixbu(); //check สิทธิ์การเข้าใช้งาน
+            $this->CI->session->set_userdata('data_uri', "Salev/Customer/TEST");
+            $data['title_name'] = 'รายการข้อมูลลูกค้าtttttt';
+            $data['title_header'] = 'รายการข้อมูลลูกค้าtttttt';
+            $data['file'] = 'customer_list_test';
+            $data['query_bufix'] = $this->CI->Model_Msalev->query_company_list();
+            $data['footer'] = "f_customer3";
         }else {
             $this->fixbu(); //check สิทธิ์การเข้าใช้งาน
             $this->CI->session->set_userdata('data_uri', "Salev/Customer/List");
@@ -136,14 +144,13 @@ class Lib_customer {
 
     public function ins_edit_customer() {
         $this->CI->load->model('Model_Msalev');
-        $address = $this->customer_address();
+//        $address = $this->customer_address();
         $fl_name = $this->customer_space_name(); //แยกชื่อและนามสกุลของลูกค้ากรณีบุคคลธรรมดา
         $datenow = date("Y-m-d H:i:s");
 
         if ($this->CI->uri->segment(3) == 'INS') {
 
-            $data_post = array('address' => $address
-                , 'frist_name' => $fl_name[0]
+            $data_post = array('frist_name' => $fl_name[0]
                 , 'last_name' => $fl_name[1]);
 
             $data_ins = $this->CI->Model_Msalev->customer_ins($data_post); //เพิ่มข้อมูล
@@ -165,24 +172,23 @@ class Lib_customer {
             //กรณีที่ ขออนุญาตแก้ไขข้อมูล และบัญชีตรวจข้อมู๔ลแล้วจะปรบเป็นไม่ให้แก้ไข
             if ($data[0]['cus_check'] == 1 and $data[0]['cus_edit'] == 0) {
                 $cus_edit = 1;
-                $data_send = $this->CI->Model_Msalev->customer_send_edit($data[0]['cse_id']);
+                $data_send = $this->CI->Model_Msalev->customer_send_edit($this->CI->uri->segment(4));
 
                 $this->CI->load->library('Lib_line');
                 $text = array('message' => 'แก้ไขเสร็จแล้ว
-                    CODE:' . $data_send[0]['sce_code'] . '
+                    CODE:' . $data_send[0]['slr_code'] . '
                     แก้ไขโดย:' . $this->CI->session->userdata('fname_thai') . ' ' . $this->CI->session->userdata('lname_thai') . '
                     ลูกค้า:' . $data[0]['cus_name'] . '
                     เมื่อเวลา:' . $datenow . '
-                    หมายเหตุ:' . $data_send[0]['sce_detail'] . '
-                    ผลการแก้ไข: http://localhost/MIW/Link/View/' . $data_log . ''); //เอาID ประวัติที่เพิ่งอัปเดตส่งไป
-                $data = array("token" => "S06GfEwOxGzXNJXjFoBwOsgOsziy9gStpkGbRonrNWl", "text" => $text);
+                    หมายเหตุ:' . $data_send[0]['slr_detail'] . '
+                    ผลการแก้ไข: '.base_url().'Link/View/' . $data_log . ''); //เอาID ประวัติที่เพิ่งอัปเดตส่งไป
+                $data = array("token" => "07Q5wUzeroZOzVJFwaGLt32gcg3EuefUliSebTWLx1j", "text" => $text);
                 $this->CI->lib_line->api_line($data);   //แจ้งเตือนไปที่ LINE เมื่อแก้ไขเสร็จ
             } else {
                 $cus_edit = $data[0]['cus_edit'];
             }
 
-            $data_post = array('address' => $address
-                , 'frist_name' => $fl_name[0]
+            $data_post = array('frist_name' => $fl_name[0]
                 , 'last_name' => $fl_name[1]
                 , 'cus_check' => $cus_check
                 , 'cus_edit' => $cus_edit
@@ -220,55 +226,54 @@ class Lib_customer {
         }
     }
 
-    private function customer_address() {
-        //เช็คว่าต้องการคำนำหน้าที่อยู่หรือไม่
-        if ($_POST['cus_prefix'] == 1) {
-
-            //เช็คก่อนว่าใช่ กทม หรือไม่
-            $fix_province = array('กรุงเทพมหานคร', 'กรุงเทพฯ', 'กทม', 'กทม.', 'กรุงเทพ');
-            if (in_array("$_POST[cus_province]", $fix_province)) {
-
-                $tt_sub_district = "แขวง";
-                $tt_district = "เขต";
-                $tt_province = "";
-
-                if ($_POST['cus_type_address'] == 2) {
-                    $tt_Lane = "ซ.";
-                    $tt_Road = "ถ.";
-                } else {
-                    $tt_Lane = "ซอย";
-                    $tt_Road = "ถนน";
-                }
-            } else {
-
-                //คำนำหน้าที่อยู่ 1 = เต็ม/ 2 = ย่อ
-                if ($_POST['cus_type_address'] == 2) {
-                    $tt_Lane = "ซ.";
-                    $tt_Road = "ถ.";
-                    $tt_sub_district = "ต.";
-                    $tt_district = "อ.";
-                    $tt_province = "จ.";
-                } else {
-                    $tt_Lane = "ซอย";
-                    $tt_Road = "ถนน";
-                    $tt_sub_district = "ตำบล";
-                    $tt_district = "อำเภอ";
-                    $tt_province = "จังหวัด";
-                }
-            }
-        } else {
-            $tt_Lane = "";
-            $tt_Road = "";
-            $tt_sub_district = "";
-            $tt_district = "";
-            $tt_province = "";
-        }
-
-        return trim($this->address_space(NULL, $_POST['cus_number']) . $this->address_space("หมู่ที่ ", $_POST['cus_swine']) . $this->address_space(NULL, $_POST['cus_building']) . $this->address_space("ห้องเลขที่ ", $_POST['cus_room'])
-                . $this->address_space("ชั้นที่ ", $_POST['cus_floor']) . $this->address_space($tt_Lane, $_POST['cus_alley']) . $this->address_space($tt_Road, $_POST['cus_road'])
-                . $this->address_space($tt_sub_district, $_POST['cus_sub_district']) . $this->address_space($tt_district, $_POST['cus_district']) . $this->address_space($tt_province, $_POST['cus_province'])
-                . $this->address_space(NULL, $_POST['cus_zipcode']));
-    }
+//    private function customer_address() {
+//        //เช็คว่าต้องการคำนำหน้าที่อยู่หรือไม่
+//        if ($_POST['cus_prefix'] == 1) {
+//            //เช็คก่อนว่าใช่ กทม หรือไม่
+//            $fix_province = array('กรุงเทพมหานคร', 'กรุงเทพฯ', 'กทม', 'กทม.', 'กรุงเทพ');
+//            if (in_array("$_POST[cus_province]", $fix_province)) {
+//
+//                $tt_sub_district = "แขวง";
+//                $tt_district = "เขต";
+//                $tt_province = "";
+//
+//                if ($_POST['cus_type_address'] == 2) {
+//                    $tt_Lane = "ซ.";
+//                    $tt_Road = "ถ.";
+//                } else {
+//                    $tt_Lane = "ซอย";
+//                    $tt_Road = "ถนน";
+//                }
+//            } else {
+//
+//                //คำนำหน้าที่อยู่ 1 = เต็ม/ 2 = ย่อ
+//                if ($_POST['cus_type_address'] == 2) {
+//                    $tt_Lane = "ซ.";
+//                    $tt_Road = "ถ.";
+//                    $tt_sub_district = "ต.";
+//                    $tt_district = "อ.";
+//                    $tt_province = "จ.";
+//                } else {
+//                    $tt_Lane = "ซอย";
+//                    $tt_Road = "ถนน";
+//                    $tt_sub_district = "ตำบล";
+//                    $tt_district = "อำเภอ";
+//                    $tt_province = "จังหวัด";
+//                }
+//            }
+//        } else {
+//            $tt_Lane = "";
+//            $tt_Road = "";
+//            $tt_sub_district = "";
+//            $tt_district = "";
+//            $tt_province = "";
+//        }
+//
+//        return trim($this->address_space(NULL, $_POST['cus_number']) . $this->address_space("หมู่ที่ ", $_POST['cus_swine']) . $this->address_space(NULL, $_POST['cus_building']) . $this->address_space("ห้องเลขที่ ", $_POST['cus_room'])
+//                . $this->address_space("ชั้นที่ ", $_POST['cus_floor']) . $this->address_space($tt_Lane, $_POST['cus_alley']) . $this->address_space($tt_Road, $_POST['cus_road'])
+//                . $this->address_space($tt_sub_district, $_POST['cus_sub_district']) . $this->address_space($tt_district, $_POST['cus_district']) . $this->address_space($tt_province, $_POST['cus_province'])
+//                . $this->address_space(NULL, $_POST['cus_zipcode']));
+//    }
 
     //เช็คว่ามีค่าหรือไม่
     private function customer_space_name() {

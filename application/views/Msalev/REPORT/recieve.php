@@ -14,27 +14,27 @@
                 <div align="center"><img src= "<?php echo base_url() ?>assets/logo/<?php echo $resc->company_img ?>" align="center" width="125" height="95"></div>
                 <div align="center" style="font-size: 2.2rem;" align="center">รายงานการรับเงินประจำวัน <?php echo $resc->company_name ?> วันที่ <?php echo $datep ?></div>
                 <table class="table table-bordered"  border="0" width="100%" cellpadding="6" cellspacing="0">
-
+                    <thead>
                     <tr>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-left:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="2%" align="center" bgcolor="#FFE6E6" rowspan="2">No.</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="5%" align="center" bgcolor="#FFE6E6" rowspan="2" >ใบเสนอราคา</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" width="5%" bgcolor="#FFE6E6" rowspan="2">ใบสั่งโรงพิมพ์</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="15%" align="center" bgcolor="#FFE6E6" rowspan="2">ลูกค้า(บริษัท)</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="10%" align="center" bgcolor="#FFE6E6" rowspan="2">ชื่องาน</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">รวมรายรับ</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">วางบิล</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;font-size: 1.2rem;" align="center" colspan="4" bgcolor="#FFE6E6">รายระเอียดการรับเช็ค/โอนงิน</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">วันที่เช็ค/โอนเงิน</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">หมายเหตุ</td>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-left:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="2%" align="center" bgcolor="#FFE6E6" rowspan="2">No.</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="5%" align="center" bgcolor="#FFE6E6" rowspan="2" >ใบเสนอราคา</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" width="5%" bgcolor="#FFE6E6" rowspan="2">ใบสั่งโรงพิมพ์</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="15%" align="center" bgcolor="#FFE6E6" rowspan="2">ลูกค้า(บริษัท)</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" width="10%" align="center" bgcolor="#FFE6E6" rowspan="2">ชื่องาน</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">รวมรายรับ</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">วางบิล</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;font-size: 1.2rem;" align="center" colspan="4" bgcolor="#FFE6E6">รายระเอียดการรับเช็ค/โอนงิน</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">วันที่เช็ค/โอนเงิน</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" rowspan="2" bgcolor="#FFE6E6">หมายเหตุ</th>
 
                     </tr>
                     <tr align="center" bgcolor="#FFE6E6">
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="10%">ธนาคาร/สาขา</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="5%">เลขที่เช็ค</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="5%">ยอดเงิน</td>
-                        <td style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="5%">ลว.เช็ค</td>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="10%">ธนาคาร/สาขา</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="5%">เลขที่เช็ค</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="5%">ยอดเงิน</th>
+                        <th style="border-top:solid 0.5px #000; border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.2rem;" align="center" bgcolor="#FFE6E6" width="5%">ลว.เช็ค</th>
                     </tr>
-
+</thead>
                     <?php
                     //แปลง id ของบริษัท เพราะ food ออกบิลเป็นของ miw และเงินเข้า miw
                     $k = 0;

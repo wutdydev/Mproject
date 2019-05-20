@@ -90,13 +90,13 @@
                         <td style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.3rem;" align="left" ><?php echo conv_bv2($result_cn->tb2_cus_name,$result_cn->tb1_ex_status) ?></td>
                         <td style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.3rem;" align="center" ><?php echo conv_bv($result_cn->tb2_cus_taxno,$result_cn->tb1_ex_status) ?></td>
                         <td style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.3rem;" align="center" ><?php echo conv_bv($result_cn->tb2_cus_tower,$result_cn->tb1_ex_status) ?></td>
-                        <td style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.3rem;" align="right" ><?php echo "-".conv_bv(number_format($result_cn->tb1_ex_amount,2),$result_cn->tb1_ex_status) ?></td>
+                        <td style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.3rem;" align="right" ><?php echo "-".conv_bv(number_format($result_cn->tb1_ex_amount_dff,2),$result_cn->tb1_ex_status) ?></td>
                         <td style="border-right:solid 0.5px #000;border-bottom:solid 0.5px #000;font-size: 1.3rem;" align="right" ><?php echo "-".conv_bv(number_format($result_cn->tb1_ex_vat,2),$result_cn->tb1_ex_status) ?></td>
                     </tr>
 
                     <?php
                     if($result_cn->tb1_ex_status == 1){
-                        $total_diff += $result_cn->tb1_ex_amount;
+                        $total_diff += $result_cn->tb1_ex_amount_dff;
                         $vat_diff += $result_cn->tb1_ex_vat; 
                     }
                 }

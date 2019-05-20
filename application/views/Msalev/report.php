@@ -1,9 +1,26 @@
 <link href="<?php echo base_url() ?>assets/css/jquery-ui.css" rel="stylesheet">
 <script src="<?php echo base_url() ?>assets/js/js_check_null_report.js" type="text/javascript"></script>
 <script type="text/javascript">
-    function CopyMe(oFileInput, sTargetID) {
-        document.getElementById(sTargetID).value = oFileInput.value;
-    }
+//    function CopyMe(oFileInput, sTargetID) {
+//        document.getElementById(sTargetID).value = oFileInput.value;
+//    }
+    $(document).ready(function () {
+        var base_url = "<?php echo base_url() ?>";
+        $("#type_report").change(function () {
+            if ($(this).val().length >= 1) {
+                $.post(base_url + "Salev/Ajaxload/Report", {
+                    data1: $(this).val()},
+                function (data) {
+                    $("#img").html(data);
+                }
+                );
+            } else {
+                $("#img").html("No Search");
+            }
+        });
+    });
+
+
 </script>
 
 <div id="page-wrapper">
@@ -13,17 +30,15 @@
         </div>
         <!-- /.col-lg-12 -->
     </div>
+    <form role="form" method="post" enctype="multipart/form-data" id="F_1" name="F_1" target="_blank">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        รายงาน
+                    </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    รายงาน
-                </div>
-                <form role="form" method="post" enctype="multipart/form-data" id="F_1" name="F_1" target="_blank">
                     <div class="panel-body">
-
                         <table class="table">
                             <thead>
                                 <tr>
@@ -173,11 +188,11 @@
                                         </div>
                                     </td>
                                     <td>
-                                       <div class="form-group has-feedback" >     
+                                        <div class="form-group has-feedback" >     
                                             <div class="form-control css-require">
-                                                <label><input type="radio" value="1" id="saveas" name="saveas" checked> NO</label>
+                                                <label><input type="radio" value="1" id="saveas" name="saveas" checked> Show</label>
                                                 &nbsp;
-                                                <label><input type="radio" value="2" id="saveas" name="saveas"> Yes</label>
+                                                <label><input type="radio" value="2" id="saveas" name="saveas"> Download</label>
                                             </div>
                                             <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
 
@@ -195,15 +210,17 @@
                             </tbody>
                         </table>
                     </div>
-                </form>
+
+                </div>
+
             </div>
-
-            <?php
-            echo $this->session->userdata('warn_rem');
-            unset($_SESSION['warn_rem']);
-            ?>
-
         </div>
+    </form>
+    
+    <div class="row" id="img" align='center'>
+        
+        
     </div>
-
+    
+    
 </div>

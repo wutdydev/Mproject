@@ -119,7 +119,7 @@
                         <textarea class="form-control" id="detail" name="detail" rows="3" placeholder="หมายเหตุเพิ่มเติม"><?php echo replace_detail($detail); ?></textarea>
                         <br>
                         <input class="form-control" name="ppcs_id" id="ppcs_id" value="<?php echo $ppcs_id ?>" type="hidden">
-                        <input class="form-control" name="ppo_cid" id="ppo_open_cid" value="<?php echo $ppo_cid ?>" type="hidden" >
+                        <input class="form-control" name="ppo_cid" id="ppo_cid" value="<?php echo $ppo_cid ?>" type="hidden" >
                         <input class="form-control" name="ppo_open_cid" id="ppo_open_cid" value="<?php echo $ppo_open_cid ?>" type="hidden" >
                         <input class="form-control" name="ppcs_tax" id="ppcs_tax" value="<?php echo $ppcs_tax ?>" type="hidden">
                         <input class="form-control" name="cus_id" id="cus_id" value="<?php echo $cus_id ?>" type="hidden">

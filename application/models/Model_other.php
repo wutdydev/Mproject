@@ -3,6 +3,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Model_other extends CI_Model {
+    
+   
 
     public function query_barcode_check($code) {
         $sql = "select * from sv_barcode where code = '$code' ";

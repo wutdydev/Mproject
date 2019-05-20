@@ -7,7 +7,7 @@
         <meta name="keywords" content="">
         <meta name="author" content="Wutdy">
         <title><?php echo $title; ?></title>
-
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url() ?>assets/logo/web/1.ico">
 
         <link href="<?php echo base_url() ?>assets/css/bootstrap.min.css" rel="stylesheet">
         <link href="<?php echo base_url() ?>assets/css/metisMenu.min.css" rel="stylesheet">
@@ -17,3 +17,4 @@
         <link href="<?php echo base_url() ?>assets/css/font-awesome.min.css" rel="stylesheet">
         <link href="<?php echo base_url() ?>assets/css/css_other.css" rel="stylesheet">
         <script type="text/javascript" src="<?php echo base_url() ?>assets/js/js_other.js"></script>
+        <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery-3.4.1.js"></script>

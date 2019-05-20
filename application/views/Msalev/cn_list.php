@@ -3,7 +3,20 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header"><?php echo $title_header; ?> </h1>
+            <h1 class="page-header"><?php echo $tt_name; ?>
+            <?php
+                if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
+                    ?>
+                    <button type="button" class="btn btn-outline btn-default"onclick="window.location = '<?php echo base_url('Salev/Maindata/Fixbu/0') ?>'" style="width: 100px;height: 74px" >ALL</button>   
+                    <?php
+                    foreach ($query_bufix as $resbf) {
+                        ?>
+                        <button type="button" class="btn btn-outline btn-default" onclick="window.location = '<?php echo base_url('Salev/Maindata/Fixbu') . '/' . $resbf->cid ?>'"><img src= "<?php echo base_url() ?>assets/logo/<?php echo $resbf->company_img ?>" align="center" width="80" height="60"></button>   
+                        <?php
+                    }
+                }
+                ?>
+            </h1>
         </div>
         <!-- /.col-lg-12 -->
     </div>

@@ -57,8 +57,15 @@
                         <td align="right" width="8%"><?php echo number_format($res->tb1_svv_9, 2); ?></td>
                         <td align="right" width="8%"><?php echo number_format($res->tb1_svv_12, 2); ?></td>
                         <td align="center">
-                         <button type="button" class="btn btn-outline btn-primary btn-sm" data-placement="top" title="ตรวจสอบข้อมูล" onClick="window.open('<?php echo base_url('Salev/PP30/Report') . '/' . $res->tb1_svv_id ?>');">&nbsp;<i class="fa fa-file-pdf-o" ></i>&nbsp;</button>
-                         <button type="button" class="btn btn-outline btn-danger btn-sm confirmation" href="<?php echo base_url('Salev/PP30/Delete') . '/' . $res->tb1_svv_id ?>"><i class="fa fa-trash-o" ></i> Delete</button>
+                            <button type="button" class="btn btn-outline btn-primary btn-sm" data-placement="top" title="ตรวจสอบข้อมูล" onClick="window.open('<?php echo base_url('Salev/PP30/Report') . '/' . $res->tb1_svv_id ?>');">&nbsp;<i class="fa fa-file-pdf-o" ></i>&nbsp;</button>
+                            <?php
+                            if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
+                                ?>
+                                <button type="button" class="btn btn-outline btn-danger btn-sm confirmation" href="<?php echo base_url('Salev/PP30/Delete') . '/' . $res->tb1_svv_id ?>"><i class="fa fa-trash-o" ></i> Delete</button>
+                                <?php
+                            }
+                            ?>
+
                         </td>
                     </tr>
                     <?php

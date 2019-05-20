@@ -19,9 +19,9 @@
             <?php
             if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
                 ?>
-                <ul class="nav navbar-nav navbar-left navbar-top-links">
+<!--                <ul class="nav navbar-nav navbar-left navbar-top-links">
                     <li><a href="<?php echo base_url('#'); ?>"><i class="fa fa-truck fa-fw"></i> Messenger</a></li>
-                </ul>
+                </ul>-->
                 <ul class="nav navbar-nav navbar-left navbar-top-links">
                     <li><a href="<?php echo base_url('Other/'); ?>"><i class="fa fa-external-link fa-fw"></i> ระบบอื่นๆ</a></li>
                 </ul>
@@ -97,6 +97,9 @@
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="<?php echo base_url('Salev/Customer/INS'); ?>">เพิ่มข้อมูลลูกค้า</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo base_url('Salev/Customer/TEST'); ?>">TEST</a>
                                 </li>
                                 <li>
                                     <a href="<?php echo base_url('Salev/Customer'); ?>">รายการข้อมูลลูกค้า</a>
@@ -252,28 +255,6 @@
                                         </ul>
                                     </li>
 
-
-                                    <?php
-                                    if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
-                                        ?>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/BILL/List/1'); ?>">รายการใบวางบิล MIW</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/BILL/List/2'); ?>">รายการใบวางบิล BP</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/BILL/List/3'); ?>">รายการใบวางบิล RICCO</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/BILL/List/4'); ?>">รายการใบวางบิล PLUS</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/BILL/List/5'); ?>">รายการใบวางบิล MAY</a>
-                                        </li>
-                                        <?php
-                                    }
-                                    ?>
                                 </ul>
                                 <!-- /.nav-second-level -->
                             </li>
@@ -338,28 +319,6 @@
                                         </ul>
                                     </li>
 
-                                    <?php
-                                    if ($this->session->userdata('type') == 1 or $this->session->userdata('type') == 7) {
-                                        ?>
-
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/VAT/List/1'); ?>">รายการใบกำกับภาษี MIW</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/VAT/List/2'); ?>">รายการใบกำกับภาษี BP</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/VAT/List/3'); ?>">รายการใบกำกับภาษี RICCO</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/VAT/List/4'); ?>">รายการใบกำกับภาษี PLUS</a>
-                                        </li>
-                                        <li>
-                                            <a href="<?php echo base_url('Salev/BVO/VAT/List/5'); ?>">รายการใบกำกับภาษี MAY</a>
-                                        </li>
-                                        <?php
-                                    }
-                                    ?>
 
                                 </ul>
                                 <!-- /.nav-second-level -->
@@ -389,43 +348,7 @@
                             </ul>
                              /.nav-second-level 
                         </li>-->
-
-
-
-
-
-                        <?php
-                        if ($this->session->userdata('type') == 1) {
-                            ?>
-
-                            <li>
-                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> ซ่อมข้อมูล<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="run_manage_maindata_edit.php" target="_blank">ปิด JOB ที่เปิดให้แก้ไข</a>
-                                    </li>
-                                    <!--                                <li>
-                                                                        <a href="run_manage_cus.php" target="_blank">ซ่อมข้อมูลลูกค้า</a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="run_manage_maindata.php">รันกระดาษใน JOB</a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="run_manage_paper.php">รายการกระดาษ</a>
-                                                                    </li>-->
-
-
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
-
-
-
-
-
-                            <?php
-                        }
-                        ?>
+                       
                     </ul>
 
                 </div>

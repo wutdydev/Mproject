@@ -1,41 +1,79 @@
 <?php
-
-function check_numvb_may($nump){
-    
-    if (strlen($nump) == 1) {
-                        $ze = "M 00000$nump";
-                    } else if (strlen($nump) == 2) {
-                        $ze = "M 0000$nump";
-                    } else if (strlen($nump) == 3) {
-                        $ze = "M 000$nump";
-                    } else if (strlen($nump) == 4) {
-                        $ze = "M 00$nump";
-                    } else if (strlen($nump) == 5) {
-                        $ze = "M 0$nump";
-                    } else {
-                        $ze = "M ".$nump;
-                    }
-                    return $ze;
+function convest_br($string) {
+    $string = str_replace(",", '</br>', $string);
+    return $string;
 }
 
-function check_numvb($nump){
-    if (strlen($nump) == 1) {
-                        $ze = "00000$nump";
-                    } else if (strlen($nump) == 2) {
-                        $ze = "0000$nump";
-                    } else if (strlen($nump) == 3) {
-                        $ze = "000$nump";
-                    } else if (strlen($nump) == 4) {
-                        $ze = "00$nump";
-                    } else if (strlen($nump) == 5) {
-                        $ze = "0$nump";
-                    } else {
-                        $ze = "$nump";
-                    }
-                    
-                    return $ze;
+
+function conv_disrp($int) {
+    $text = ($int*20/100)+$int;
+    return $text;
 }
 
+function conv_disr($int) {
+    $text = ($int*20/100)-$int;
+    return $text;
+}
+
+function conv4($int) {
+    $text = ($int*4/100)+$int;
+    return $text;
+}
+
+
+
+function trimvb($string) {
+    $text = trim($string);
+    $text = str_replace(" ", ',', $text);
+    return $text;
+}
+
+
+function colorint($int1, $int2) {
+
+    if ($int2 >= $int1) {
+        $text = number_format($int2, 2);
+    } else {
+        $text = "<font color='red'>" . number_format($int2, 2) . "</font>";
+    }
+    return $text;
+}
+
+function check_numvb_may($nump) {
+
+    if (strlen($nump) == 1) {
+        $ze = "M 0000000$nump";
+    } else if (strlen($nump) == 2) {
+        $ze = "M 000000$nump";
+    } else if (strlen($nump) == 3) {
+        $ze = "M 00000$nump";
+    } else if (strlen($nump) == 4) {
+        $ze = "M 0000$nump";
+    } else if (strlen($nump) == 5) {
+        $ze = "M 000$nump";
+    } else {
+        $ze = "M 00" . $nump;
+    }
+    return $ze;
+}
+
+function check_numvb($nump) {
+    if (strlen($nump) == 1) {
+        $ze = "00000$nump";
+    } else if (strlen($nump) == 2) {
+        $ze = "0000$nump";
+    } else if (strlen($nump) == 3) {
+        $ze = "000$nump";
+    } else if (strlen($nump) == 4) {
+        $ze = "00$nump";
+    } else if (strlen($nump) == 5) {
+        $ze = "0$nump";
+    } else {
+        $ze = "$nump";
+    }
+
+    return $ze;
+}
 
 //ตัวเลขนำหน้า 36+อีก15ตัว
 function random() {
@@ -60,28 +98,27 @@ function chkDigi($clubcard) {
     return (10 - ($sum % 10)) % 10;
 }
 
-
-function download_check($type){
-    if($type == 2){//กรณีต้องการ Download
-       $download = "D";
-    }else{
-       $download = "I";
+function download_check($type) {
+    if ($type == 2) {//กรณีต้องการ Download
+        $download = "D";
+    } else {
+        $download = "I";
     }
     return $download;
 }
 
-function filename_check($type,$name,$file){
-    if($type == 2){//กรณีต้องการ Download
-       $filename = $name.".".$file;
-    }else{
-       $filename = $name;
+function filename_check($type, $name, $file) {
+    if ($type == 2) {//กรณีต้องการ Download
+        $filename = $name . "." . $file;
+    } else {
+        $filename = $name . "." . $file;
     }
     return $filename;
 }
 
 function OpenInNewTab($uri) {
     echo "<script type='text/javascript'>
-                  window.open('".$uri."', '_blank');
+                  window.open('" . $uri . "', '_blank');
                   </script>"; //แสดง alert และเด้งกลับไปที่หน้าเดิม
 }
 
@@ -91,6 +128,14 @@ function close() {
                   </script>"; //แสดง alert และเด้งกลับไปที่หน้าเดิม
 }
 
+function type_vatbut($int, $text) {
+    if ($int == 1) {
+        $int = "<font color='green'>$text <i class='fa fa-check' ></i></font>";
+    } else {
+        $int = "<font color='red'>$text <i class='fa fa-warning' ></i></font>";
+    }
+    return $int;
+}
 
 function conv_index($int1) {
     if ($int1 == 0) {
@@ -287,9 +332,9 @@ function form_cc($date, $name, $ex_id) {
     }
 
     if (!empty($date)) {
-        $form_recheck = "  ".conv_date($date)." <a  target='_blank' href='" . base_url('Salev/BVO/' . $link . '/EDIT') . '/' . $ex_id . "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
+        $form_recheck = "  " . conv_date($date) . " <a target='_blank' href='" . base_url('Salev/BVO/' . $link . '/EDIT') . '/' . $ex_id . "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></a>";
     } else {
-        $form_recheck = "<form method='post' enctype='multipart/form-data' name='form3$ex_id' id='form3$ex_id' action='" . base_url('Salev/BVO/' . $link . '/DC/') . $ex_id . "'>
+        $form_recheck = "<form method='post' enctype='multipart/form-data' name='form3$ex_id' id='form3$ex_id'  target='_blank' action='" . base_url('Salev/BVO/' . $link . '/DC/') . $ex_id . "'>
                <div class='row'>
                         <div class='col-md-9'>
                         <input type='date' class='form-control date' name='ex_date_check$ex_id' id='ex_date_check$ex_id' >
@@ -302,7 +347,7 @@ function form_cc($date, $name, $ex_id) {
                </div> 
             </form>  ";
     }
-    
+
     return $form_recheck;
 }
 
@@ -467,6 +512,16 @@ function icons_status($int1, $str1) {
     return $int1;
 }
 
+
+function icons_statusmd($int1, $str1) {
+    if ($int1 == 1) {
+        $int1 = "<div class='alert alert-success'><i class='fa fa-check'></i> $str1</div>";
+    } else {
+        $int1 = "<div class='alert alert-danger'><i class='fa fa-close'></i> $str1</div>";
+    }
+    return $int1;
+}
+
 function logappove($mda, $datetime, $type, $name) {
 //เช็คว่าเป็น online / direct
     if ($mda == 1 and $type == 'T0002') {
@@ -495,7 +550,7 @@ function conv_int($int) {
     if ($int == 0) {
         $text = "";
     } else {
-        $text = number_format($int,2);
+        $text = number_format($int, 2);
     }
     return $text;
 }
@@ -543,7 +598,7 @@ function conv_datenull($date) {
     if ($date == null) {
         $dateconv = "null";
     } else {
-        $dateconv = "$date";
+        $dateconv = "'$date'";
     }
     return $dateconv;
 }
@@ -556,7 +611,6 @@ function datenull_edit($date) {
     }
     return $dateconv;
 }
-
 
 function conv_date($date) {
     list($Yv1, $mv1, $dv1) = explode('-', $date);
@@ -632,6 +686,16 @@ function rep_number($int1, $int2) {
     return $int1;
 }
 
+function rep_number0($int1, $int2) {
+
+    if ($int1 == 0) {
+        $int1 = "0.00";
+    } else {
+        $int1 = number_format(un_nfm($int1), $int2);
+    }
+    return $int1;
+}
+
 function checkicon_bv($id) {
     if ($id == 1) {
         $icon = "<span style='color: green' class='glyphicon glyphicon-ok'></span>";
@@ -644,6 +708,17 @@ function checkicon_bv($id) {
 function empt_fm($num) {
     if (!empty($num)) {
         $num = number_format($num, 3);
+        list($whole, $decimal) = explode('.', $num);    // results in 3
+        $new_number = $whole . ($decimal > 0 ? "." . $decimal : '');
+        return $new_number;
+    } else {
+        return 0;
+    }
+}
+
+function empt_fm2($num) {
+    if (!empty($num)) {
+        $num = number_format($num, 2);
         list($whole, $decimal) = explode('.', $num);    // results in 3
         $new_number = $whole . ($decimal > 0 ? "." . $decimal : '');
         return $new_number;
@@ -920,4 +995,5 @@ function str_month($m) {
     }
     return $m;
 }
+
 ?>

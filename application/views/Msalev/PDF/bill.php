@@ -198,7 +198,7 @@
                         </tr>
                         <tr>
                             <td align="right" COLSPAN = "3" style="border-right: solid 1px #000;font-size: 1.2rem;">&nbsp;จำนวนภาษีมูลค่าเพิ่ม/VAT</td>
-                            <td style="border-bottom: solid 1px #000;font-size: 1.2rem;" align="right"><?php echo rep_number($vat7, 2) ?></td>
+                            <td style="border-bottom: solid 1px #000;font-size: 1.2rem;" align="right"><?php echo rep_number0($vat7, 2) ?></td>
                         </tr>
 
                         <tr>
